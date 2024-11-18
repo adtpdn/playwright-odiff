@@ -1,7 +1,15 @@
 import { test } from "@playwright/test";
 import path from "path";
 import fs from "fs";
-import slugify from "slugify";
+
+// Simple URL to filename conversion function
+function createFileNameFromUrl(url: string): string {
+  return url
+    .replace(/^https?:\/\//, "")
+    .replace(/\/$/, "")
+    .replace(/[^a-zA-Z0-9]/g, "-")
+    .toLowerCase();
+}
 
 const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
 const currentDir = path.join(process.cwd(), "screenshots", timestamp);
@@ -13,7 +21,7 @@ if (!fs.existsSync(currentDir)) {
 
 test("capture screenshots", async ({ page, browserName, viewport }) => {
   const url = "https://adengroup.com/";
-  const urlSlug = slugify(url.replace(/^https?:\/\//, "").replace(/\/$/, ""));
+  const urlSlug = createFileNameFromUrl(url);
   const fileName = `${urlSlug}-${browserName}-${viewport.width}x${viewport.height}.png`;
 
   // Configure page to ignore HTTPS errors
