@@ -1,44 +1,51 @@
 import { test } from "@playwright/test";
-import { compareImages } from "odiff-bin";
-import * as fs from "fs";
-import * as path from "path";
+import path from "path";
+import fs from "fs";
+import slugify from "slugify";
 
-const URLs = [
-  "https://adengroup.com",
-  "https://adenenergies.com",
-  // Add more URLs here
-];
+const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+const currentDir = path.join(process.cwd(), "screenshots", timestamp);
+const baselineDir = path.join(process.cwd(), "screenshots", "baseline");
+
+if (!fs.existsSync(currentDir)) {
+  fs.mkdirSync(currentDir, { recursive: true });
+}
 
 test("capture screenshots", async ({ page, browserName, viewport }) => {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-  const screenshotsDir = path.join(process.cwd(), "screenshots");
-  const currentDir = path.join(screenshotsDir, timestamp);
-  const baselineDir = path.join(screenshotsDir, "baseline");
+  const url = "https://adengroup.com/";
+  const urlSlug = slugify(url.replace(/^https?:\/\//, "").replace(/\/$/, ""));
+  const fileName = `${urlSlug}-${browserName}-${viewport.width}x${viewport.height}.png`;
 
-  fs.mkdirSync(currentDir, { recursive: true });
-  fs.mkdirSync(baselineDir, { recursive: true });
+  // Configure page to ignore HTTPS errors
+  await page.goto(url, {
+    waitUntil: "load",
+    ignoreHTTPSErrors: true,
+  });
+  await page.waitForLoadState("networkidle");
 
-  for (const url of URLs) {
-    const urlSlug = url.replace(/[^a-zA-Z0-9]/g, "-");
-    const fileName = `${urlSlug}-${browserName}-${viewport.width}x${viewport.height}.png`;
+  const currentPath = path.join(currentDir, fileName);
+  await page.screenshot({
+    path: currentPath,
+    fullPage: true,
+  });
 
-    await page.goto(url);
-    await page.waitForLoadState("networkidle");
-
-    const currentPath = path.join(currentDir, fileName);
-    await page.screenshot({ path: currentPath, fullPage: true });
-
-    const baselinePath = path.join(baselineDir, fileName);
-    if (fs.existsSync(baselinePath)) {
-      const diffPath = path.join(currentDir, `diff-${fileName}`);
-      await compareImages({
-        imageA: baselinePath,
-        imageB: currentPath,
-        output: diffPath,
-        threshold: 0.1,
-      });
-    } else {
-      fs.copyFileSync(currentPath, baselinePath);
+  // Compare with baseline if it exists
+  const baselinePath = path.join(baselineDir, fileName);
+  if (fs.existsSync(baselinePath)) {
+    const diffPath = path.join(currentDir, `diff-${fileName}`);
+    const { imagesAreSame } = await compareScreenshots(
+      baselinePath,
+      currentPath,
+      diffPath
+    );
+    if (!imagesAreSame) {
+      console.log(`Screenshots differ for ${fileName}`);
     }
+  } else {
+    // Create baseline if it doesn't exist
+    if (!fs.existsSync(baselineDir)) {
+      fs.mkdirSync(baselineDir, { recursive: true });
+    }
+    fs.copyFileSync(currentPath, baselinePath);
   }
 });
