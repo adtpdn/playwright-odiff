@@ -36,185 +36,74 @@ const htmlTemplate = `
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visual Testing Report</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: #f5f5f5;
-        }
-        
-        .collapse-header {
-            background: #fff;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 5px;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .collapse-content {
-            display: none;
-            padding: 15px;
-            background: #fff;
-            margin-bottom: 20px;
-            border-radius: 5px;
-        }
-        
-        .comparison-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        .comparison-table td {
-            padding: 10px;
-            text-align: center;
-        }
-        
-        .thumbnail {
-            max-width: 200px;
-            cursor: pointer;
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-        }
-        
-        .modal-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #fff;
-            padding: 20px;
-            border-radius: 5px;
-        }
-        
-        .comparison-slider {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            overflow: hidden;
-        }
-        
-        .comparison-slider img {
-            max-width: 100%;
-        }
-        
-        .slider-handle {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: #fff;
-            cursor: ew-resize;
-        }
-        
-        .close-modal {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-            color: #fff;
-            font-size: 24px;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/img-comparison-slider@7/dist/index.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/img-comparison-slider@7/dist/styles.css" />
 </head>
-<body>
-    <h1>Visual Testing Report</h1>
-    
-    ${screenshots
-      .map(
-        (screenshot, index) => `
-        <div class="collapse-header" onclick="toggleCollapse(${index})">
-            ${screenshot}
-        </div>
-        <div class="collapse-content" id="collapse-${index}">
-            <table class="comparison-table">
-                <tr>
-                    <td>
-                        <img src="${reportData[index].baseline}" class="thumbnail" 
-                             onclick="showComparison('${reportData[index].baseline}', '${reportData[index].current}')">
-                        <p>Baseline</p>
-                    </td>
-                    <td>
-                        <img src="${reportData[index].current}" class="thumbnail">
-                        <p>Current</p>
-                    </td>
-                    <td>
-                        <img src="${reportData[index].diff}" class="thumbnail">
-                        <p>Diff</p>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    `
-      )
-      .join("")}
-    
-    <div class="modal" id="comparison-modal">
-        <span class="close-modal" onclick="closeModal()">&times;</span>
-        <div class="modal-content">
-            <div class="comparison-slider" id="comparison-slider">
-                <img src="" id="baseline-image">
-                <div class="slider-handle"></div>
-            </div>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">Visual Testing Report</h1>
+        
+        <div class="space-y-4">
+            ${screenshots
+              .map(
+                (screenshot, index) => `
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <button 
+                        class="w-full px-6 py-4 text-left hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200"
+                        onclick="toggleCollapse(${index})"
+                    >
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-lg font-semibold text-gray-700">${screenshot}</h2>
+                            <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-200" id="arrow-${index}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </button>
+                    
+                    <div class="hidden px-6 py-4" id="collapse-${index}">
+                        <div class="max-w-4xl mx-auto">
+                            <img-comparison-slider>
+                                <img slot="first" src="${reportData[index].baseline}" class="w-full" alt="Baseline">
+                                <img slot="second" src="${reportData[index].current}" class="w-full" alt="Current">
+                            </img-comparison-slider>
+                            
+                            <div class="mt-4 grid grid-cols-2 gap-4 text-sm text-gray-600">
+                                <div class="text-center">
+                                    <p class="font-medium">Baseline</p>
+                                    <p class="text-gray-500">${reportData[index].baseline}</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="font-medium">Current</p>
+                                    <p class="text-gray-500">${reportData[index].current}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6">
+                                <p class="font-medium text-gray-700 mb-2">Difference Visualization</p>
+                                <img src="${reportData[index].diff}" class="w-full rounded-lg shadow" alt="Difference">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `
+              )
+              .join("")}
         </div>
     </div>
 
     <script>
         function toggleCollapse(index) {
             const content = document.getElementById(\`collapse-\${index}\`);
-            content.style.display = content.style.display === 'none' ? 'block' : 'none';
-        }
-        
-        function showComparison(baselineUrl, currentUrl) {
-            const modal = document.getElementById('comparison-modal');
-            const slider = document.getElementById('comparison-slider');
-            const baselineImage = document.getElementById('baseline-image');
+            const arrow = document.getElementById(\`arrow-\${index}\`);
             
-            baselineImage.src = baselineUrl;
-            modal.style.display = 'block';
-            
-            let isDragging = false;
-            let startX;
-            let sliderLeft;
-            
-            slider.addEventListener('mousedown', startDragging);
-            document.addEventListener('mousemove', drag);
-            document.addEventListener('mouseup', stopDragging);
-            
-            function startDragging(e) {
-                isDragging = true;
-                startX = e.pageX - slider.offsetLeft;
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                content.classList.add('hidden');
+                arrow.style.transform = 'rotate(0deg)';
             }
-            
-            function drag(e) {
-                if (!isDragging) return;
-                
-                e.preventDefault();
-                const x = e.pageX - startX;
-                const sliderWidth = slider.offsetWidth;
-                
-                const left = Math.max(0, Math.min(x, sliderWidth));
-                slider.style.clipPath = \`inset(0 0 0 \${(left / sliderWidth) * 100}%)\`;
-                document.querySelector('.slider-handle').style.left = \`\${left}px\`;
-            }
-            
-            function stopDragging() {
-                isDragging = false;
-            }
-        }
-        
-        function closeModal() {
-            document.getElementById('comparison-modal').style.display = 'none';
         }
     </script>
 </body>

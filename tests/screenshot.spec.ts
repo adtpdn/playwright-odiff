@@ -4,7 +4,8 @@ import * as fs from "fs";
 import * as path from "path";
 
 const URLs = [
-  "https://example.com",
+  "https://adengroup.com",
+  "https://adenenergies.com",
   // Add more URLs here
 ];
 
