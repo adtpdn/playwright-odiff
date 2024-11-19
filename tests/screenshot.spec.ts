@@ -30,15 +30,27 @@ function createFileNameFromUrl(url: string): string {
 }
 
 function setupDirectories() {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
   const screenshotsDir = path.join(process.cwd(), "screenshots");
-  const currentDir = path.join(screenshotsDir, timestamp);
+  const currentDir = path.join(screenshotsDir);
   const baselineDir = path.join(screenshotsDir, "baseline");
 
-  [screenshotsDir, currentDir, baselineDir].forEach((dir) => {
+  // Create main directories
+  [screenshotsDir, baselineDir].forEach((dir) => {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
+  });
+
+  // Create browser-specific directories
+  browsers.forEach((browser) => {
+    const browserCurrentDir = path.join(currentDir, browser);
+    const browserBaselineDir = path.join(baselineDir, browser);
+
+    [browserCurrentDir, browserBaselineDir].forEach((dir) => {
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+    });
   });
 
   return { currentDir, baselineDir };
@@ -73,17 +85,17 @@ test("Screenshot comparison across devices and browsers", async ({
       await page.waitForLoadState("domcontentloaded");
 
       // Take screenshot
-      const currentPath = path.join(currentDir, fileName);
+      const currentPath = path.join(currentDir, browserName, fileName);
       await page.screenshot({
         path: currentPath,
         fullPage: true,
       });
 
       // Compare with baseline
-      const baselinePath = path.join(baselineDir, fileName);
+      const baselinePath = path.join(baselineDir, browserName, fileName);
 
       if (fs.existsSync(baselinePath)) {
-        const diffPath = path.join(currentDir, `diff-${fileName}`);
+        const diffPath = path.join(currentDir, browserName, `diff-${fileName}`);
         try {
           const { imagesAreSame } = await compareScreenshots(
             baselinePath,

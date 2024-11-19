@@ -2,9 +2,17 @@
   "name": "playwright-odiff",
   "version": "1.0.0",
   "scripts": {
-    "test": "playwright test",
+    "test:local": "bash test-local.sh",
+    "test:clean": "rm -rf screenshots/* && rm -rf public/* && rm -rf test-results/* && rm -rf playwright-report/*",
     "test:update-baseline": "playwright test --update-snapshots",
-    "report": "node generate-report.js"
+    "test:report": "node generate-report.js",
+
+    "test:ci": "playwright test",
+    "test:install": "playwright install --with-deps",
+    "test:verify": "playwright --version && playwright browsers list",
+
+    "clean": "rm -rf node_modules",
+    "reinstall": "npm run clean && npm install"
   },
   "keywords": [],
   "author": "",

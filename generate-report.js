@@ -3,46 +3,22 @@ const fs = require("fs");
 const path = require("path");
 
 function generateReport() {
-  console.log("Starting report generation...");
-
   const screenshotsDir = path.join(process.cwd(), "screenshots");
   const publicDir = path.join(process.cwd(), "public");
 
-  // Create public directory if it doesn't exist
   if (!fs.existsSync(publicDir)) {
     fs.mkdirSync(publicDir);
   }
 
-  const timestamps = fs
-    .readdirSync(screenshotsDir)
-    .filter((f) => f !== "baseline")
-    .sort()
-    .reverse();
-
-  console.log("Found timestamp directories:", timestamps);
-
-  if (timestamps.length === 0) {
-    console.log("No screenshots found to generate report");
-    return;
-  }
-
-  const latestDir = timestamps[0];
   const baselineDir = path.join(screenshotsDir, "baseline");
-  const currentDir = path.join(screenshotsDir, latestDir);
+  const currentDir = path.join(screenshotsDir);
 
   function parseScreenshotName(filename) {
-    console.log("Processing filename:", filename);
-
     const parts = filename.replace(".png", "").split("-");
-    console.log("Split parts:", parts);
+    const resolution = parts.pop();
+    const device = parts.pop();
+    const browserRaw = parts[parts.length - 1].toLowerCase();
 
-    const resolution = parts.pop(); // 375x667
-    const device = parts.pop(); // mobile
-    const browserRaw = parts.pop().toLowerCase(); // firefox or chromium
-    const page = parts[1]; // about
-    const domain = parts[0]; // adengroupcom
-
-    // Map browser names to proper display names
     const browserMap = {
       chromium: "Chrome",
       webkit: "Safari",
@@ -52,38 +28,43 @@ function generateReport() {
       safari: "Safari",
     };
 
-    console.log(
-      `Browser raw: ${browserRaw}, mapped to: ${
-        browserMap[browserRaw] || browserRaw
-      }`
-    );
-
     const browser = browserMap[browserRaw] || browserRaw;
-
+    const page = parts[1];
+    const domain = parts[0];
     const displayUrl = page === "home" ? `${domain}` : `${domain}/${page}`;
 
-    const result = {
+    return {
       url: displayUrl,
       browser,
       device,
       resolution,
       fullName: filename,
     };
-
-    console.log("Parsed result:", result);
-    return result;
   }
 
-  const screenshots = fs
-    .readdirSync(currentDir)
-    .filter((f) => !f.startsWith("diff-"));
+  const browsers = ["chromium", "firefox", "webkit"];
+  const screenshots = [];
 
-  console.log("Processing screenshots:", screenshots);
+  browsers.forEach((browser) => {
+    const browserDir = path.join(currentDir, browser);
+    if (fs.existsSync(browserDir)) {
+      const browserScreenshots = fs
+        .readdirSync(browserDir)
+        .filter((f) => !f.startsWith("diff-"))
+        .map((filename) => ({
+          filename,
+          browser,
+          path: path.join(browser, filename),
+        }));
+      screenshots.push(...browserScreenshots);
+    }
+  });
 
   const groupedByUrl = {};
 
-  screenshots.forEach((screenshot) => {
-    const metadata = parseScreenshotName(screenshot);
+  screenshots.forEach(({ filename, browser, path: screenshotPath }) => {
+    const metadata = parseScreenshotName(filename);
+
     if (!groupedByUrl[metadata.url]) {
       groupedByUrl[metadata.url] = {
         browsers: new Set(),
@@ -92,16 +73,15 @@ function generateReport() {
       };
     }
 
-    const diffFile = `diff-${screenshot}`;
-    const hasDiff = fs.existsSync(path.join(currentDir, diffFile));
-
     groupedByUrl[metadata.url].browsers.add(metadata.browser);
     groupedByUrl[metadata.url].devices.add(metadata.device);
     groupedByUrl[metadata.url].screenshots.push({
       ...metadata,
-      baseline: path.join("screenshots/baseline", screenshot),
-      current: path.join(`screenshots/${latestDir}`, screenshot),
-      diff: hasDiff ? path.join(`screenshots/${latestDir}`, diffFile) : null,
+      baseline: path.join("screenshots/baseline", browser, filename),
+      current: path.join("screenshots", browser, filename),
+      diff: fs.existsSync(path.join(currentDir, browser, `diff-${filename}`))
+        ? path.join("screenshots", browser, `diff-${filename}`)
+        : null,
     });
   });
 
@@ -165,6 +145,40 @@ function generateReport() {
           .browser-content.active {
               display: block;
           }
+          .viewport-section {
+              border-top: 1px solid #e5e7eb;
+          }
+          .viewport-content {
+              display: none;
+              padding: 1rem;
+          }
+          .viewport-content.active {
+              display: block;
+          }
+          #goToTopBtn {
+              position: fixed;
+              bottom: 20px;
+              right: 20px;
+              background-color: #4f46e5;
+              color: white;
+              width: 40px;
+              height: 40px;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              cursor: pointer;
+              transition: opacity 0.3s;
+              opacity: 0;
+              z-index: 1000;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+          #goToTopBtn.visible {
+              opacity: 1;
+          }
+          #goToTopBtn:hover {
+              background-color: #4338ca;
+          }
       </style>
   </head>
   <body class="bg-gray-50">
@@ -222,69 +236,86 @@ function generateReport() {
                                   <div class="browser-content" id="browser-content-${urlIndex}-${browserIndex}">
                                       ${Array.from(data.devices)
                                         .map(
-                                          (device) => `
-                                          <div class="px-6 py-4">
-                                              <h4 class="text-sm font-medium text-gray-600 mb-4">${device}</h4>
-                                              ${data.screenshots
-                                                .filter(
-                                                  (s) =>
-                                                    s.device === device &&
-                                                    s.browser === browser
-                                                )
-                                                .map(
-                                                  (
-                                                    screenshot,
-                                                    screenshotIndex
-                                                  ) => `
-                                                      <div class="space-y-2 mb-8">
-                                                          <div class="flex justify-between items-center">
-                                                              <div class="text-sm font-medium text-gray-600">
-                                                                  ${
-                                                                    screenshot.resolution
-                                                                  }
+                                          (device, deviceIndex) => `
+                                          <div class="viewport-section">
+                                              <button 
+                                                  class="w-full px-6 py-3 text-left bg-gray-100 hover:bg-gray-200 focus:outline-none"
+                                                  onclick="toggleViewport(${urlIndex}, ${browserIndex}, ${deviceIndex})"
+                                              >
+                                                  <div class="flex items-center justify-between">
+                                                      <h4 class="text-sm font-medium text-gray-600">${device}</h4>
+                                                      <svg class="w-4 h-4 text-gray-500 transform transition-transform duration-200" 
+                                                          id="viewport-arrow-${urlIndex}-${browserIndex}-${deviceIndex}"
+                                                          fill="none" 
+                                                          stroke="currentColor" 
+                                                          viewBox="0 0 24 24"
+                                                      >
+                                                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                                      </svg>
+                                                  </div>
+                                              </button>
+                                              <div class="viewport-content" id="viewport-content-${urlIndex}-${browserIndex}-${deviceIndex}">
+                                                  ${data.screenshots
+                                                    .filter(
+                                                      (s) =>
+                                                        s.device === device &&
+                                                        s.browser === browser
+                                                    )
+                                                    .map(
+                                                      (
+                                                        screenshot,
+                                                        screenshotIndex
+                                                      ) => `
+                                                          <div class="space-y-2 mb-8">
+                                                              <div class="flex justify-between items-center">
+                                                                  <div class="text-sm font-medium text-gray-600">
+                                                                      ${
+                                                                        screenshot.resolution
+                                                                      }
+                                                                  </div>
+                                                                  <div class="view-modes">
+                                                                      <button class="view-mode-btn active" 
+                                                                              onclick="switchView(${urlIndex}, ${browserIndex}, ${deviceIndex}, ${screenshotIndex}, 'comparison')">
+                                                                          Slider
+                                                                      </button>
+                                                                      ${
+                                                                        screenshot.diff
+                                                                          ? `
+                                                                        <button class="view-mode-btn" 
+                                                                                onclick="switchView(${urlIndex}, ${browserIndex}, ${deviceIndex}, ${screenshotIndex}, 'diff')">
+                                                                            Diff
+                                                                        </button>
+                                                                      `
+                                                                          : ""
+                                                                      }
+                                                                  </div>
                                                               </div>
-                                                              <div class="view-modes">
-                                                                  <button class="view-mode-btn active" 
-                                                                          onclick="switchView(${urlIndex}, ${browserIndex}, ${screenshotIndex}, 'comparison')">
-                                                                      Slider
-                                                                  </button>
+                                                              <div class="comparison-container" id="container-${urlIndex}-${browserIndex}-${deviceIndex}-${screenshotIndex}">
+                                                                  <div class="comparison-view">
+                                                                      <img-comparison-slider class="rounded-lg shadow-sm">
+                                                                          <img slot="first" src="${
+                                                                            screenshot.baseline
+                                                                          }" alt="Baseline" loading="lazy">
+                                                                          <img slot="second" src="${
+                                                                            screenshot.current
+                                                                          }" alt="Current" loading="lazy">
+                                                                      </img-comparison-slider>
+                                                                  </div>
                                                                   ${
                                                                     screenshot.diff
                                                                       ? `
-                                                                      <button class="view-mode-btn" 
-                                                                              onclick="switchView(${urlIndex}, ${browserIndex}, ${screenshotIndex}, 'diff')">
-                                                                          Diff
-                                                                      </button>
+                                                                    <div class="diff-view">
+                                                                        <img src="${screenshot.diff}" alt="Diff" class="w-full rounded-lg shadow-sm" loading="lazy">
+                                                                    </div>
                                                                   `
                                                                       : ""
                                                                   }
                                                               </div>
                                                           </div>
-                                                          <div class="comparison-container" id="container-${urlIndex}-${browserIndex}-${screenshotIndex}">
-                                                              <div class="comparison-view">
-                                                                  <img-comparison-slider class="rounded-lg shadow-sm">
-                                                                      <img slot="first" src="${
-                                                                        screenshot.baseline
-                                                                      }" alt="Baseline" loading="lazy">
-                                                                      <img slot="second" src="${
-                                                                        screenshot.current
-                                                                      }" alt="Current" loading="lazy">
-                                                                  </img-comparison-slider>
-                                                              </div>
-                                                              ${
-                                                                screenshot.diff
-                                                                  ? `
-                                                                  <div class="diff-view">
-                                                                      <img src="${screenshot.diff}" alt="Diff" class="w-full rounded-lg shadow-sm" loading="lazy">
-                                                                  </div>
-                                                              `
-                                                                  : ""
-                                                              }
-                                                          </div>
-                                                      </div>
-                                                  `
-                                                )
-                                                .join("")}
+                                                      `
+                                                    )
+                                                    .join("")}
+                                              </div>
                                           </div>
                                       `
                                         )
@@ -301,6 +332,12 @@ function generateReport() {
                 .join("")}
           </div>
       </div>
+
+      <button id="goToTopBtn" onclick="scrollToTop()">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+          </svg>
+      </button>
 
       <script>
           function toggleCollapse(index) {
@@ -329,8 +366,21 @@ function generateReport() {
               }
           }
 
-          function switchView(urlIndex, browserIndex, screenshotIndex, mode) {
-              const container = document.getElementById('container-' + urlIndex + '-' + browserIndex + '-' + screenshotIndex);
+          function toggleViewport(urlIndex, browserIndex, deviceIndex) {
+              const content = document.getElementById('viewport-content-' + urlIndex + '-' + browserIndex + '-' + deviceIndex);
+              const arrow = document.getElementById('viewport-arrow-' + urlIndex + '-' + browserIndex + '-' + deviceIndex);
+              
+              if (content.classList.contains('active')) {
+                  content.classList.remove('active');
+                  arrow.style.transform = 'rotate(0deg)';
+              } else {
+                  content.classList.add('active');
+                  arrow.style.transform = 'rotate(180deg)';
+              }
+          }
+
+          function switchView(urlIndex, browserIndex, deviceIndex, screenshotIndex, mode) {
+              const container = document.getElementById('container-' + urlIndex + '-' + browserIndex + '-' + deviceIndex + '-' + screenshotIndex);
               if (!container) return;
 
               const parentElement = container.closest('.space-y-2');
@@ -354,18 +404,32 @@ function generateReport() {
                   container.classList.remove('view-diff');
               }
           }
+
+          function scrollToTop() {
+              window.scrollTo({
+                  top: 0,
+                  behavior: 'smooth'
+              });
+          }
+
+          // Show/hide "Go to Top" button based on scroll position
+          window.onscroll = function() {
+              const btn = document.getElementById('goToTopBtn');
+              if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                  btn.classList.add('visible');
+              } else {
+                  btn.classList.remove('visible');
+              }
+          };
       </script>
   </body>
   </html>
   `;
 
   fs.writeFileSync(path.join(publicDir, "index.html"), htmlTemplate);
-
   fs.cpSync(screenshotsDir, path.join(publicDir, "screenshots"), {
     recursive: true,
   });
-
-  console.log("Report generated successfully!");
 }
 
 module.exports = { generateReport };
