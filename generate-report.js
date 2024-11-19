@@ -3,8 +3,8 @@ const fs = require("fs");
 const path = require("path");
 
 function generateReport() {
-  console.log('Starting report generation...');
-  
+  console.log("Starting report generation...");
+
   const screenshotsDir = path.join(process.cwd(), "screenshots");
   const publicDir = path.join(process.cwd(), "public");
 
@@ -19,7 +19,7 @@ function generateReport() {
     .sort()
     .reverse();
 
-  console.log('Found timestamp directories:', timestamps);
+  console.log("Found timestamp directories:", timestamps);
 
   if (timestamps.length === 0) {
     console.log("No screenshots found to generate report");
@@ -31,31 +31,30 @@ function generateReport() {
   const currentDir = path.join(screenshotsDir, latestDir);
 
   function parseScreenshotName(filename) {
-    const parts = filename.replace('.png', '').split('-');
+    const parts = filename.replace(".png", "").split("-");
     const resolution = parts.pop();
     const device = parts.pop();
     const browser = parts.pop();
     const page = parts.pop();
-    const domain = parts.join('-');
+    const domain = parts.join("-");
 
-    const displayUrl = page === 'home' 
-      ? `${domain}.com` 
-      : `${domain}.com/${page}`;
+    const displayUrl =
+      page === "home" ? `${domain}.com` : `${domain}.com/${page}`;
 
     return {
       url: displayUrl,
       browser,
       device,
       resolution,
-      fullName: filename
+      fullName: filename,
     };
   }
 
   const screenshots = fs
     .readdirSync(currentDir)
     .filter((f) => !f.startsWith("diff-"));
-    
-  console.log('Processing screenshots:', screenshots);
+
+  console.log("Processing screenshots:", screenshots);
 
   const groupedByUrl = {};
 
@@ -78,7 +77,7 @@ function generateReport() {
       ...metadata,
       baseline: path.join("screenshots/baseline", screenshot),
       current: path.join(`screenshots/${latestDir}`, screenshot),
-      diff: hasDiff ? path.join(`screenshots/${latestDir}`, diffFile) : null
+      diff: hasDiff ? path.join(`screenshots/${latestDir}`, diffFile) : null,
     });
   });
 
@@ -175,33 +174,47 @@ function generateReport() {
                                           <div class="space-y-2 mb-8">
                                               <div class="flex justify-between items-center">
                                                   <div class="text-sm font-medium text-gray-600">
-                                                      ${screenshot.browser} - ${screenshot.resolution}
+                                                      ${screenshot.browser} - ${
+                                        screenshot.resolution
+                                      }
                                                   </div>
                                                   <div class="view-modes">
                                                       <button class="view-mode-btn active" 
                                                               onclick="switchView(${urlIndex}, ${screenshotIndex}, 'comparison')">
                                                           Slider
                                                       </button>
-                                                      ${screenshot.diff ? `
+                                                      ${
+                                                        screenshot.diff
+                                                          ? `
                                                           <button class="view-mode-btn" 
                                                                   onclick="switchView(${urlIndex}, ${screenshotIndex}, 'diff')">
                                                               Diff
                                                           </button>
-                                                      ` : ''}
+                                                      `
+                                                          : ""
+                                                      }
                                                   </div>
                                               </div>
                                               <div class="comparison-container" id="container-${urlIndex}-${screenshotIndex}">
                                                   <div class="comparison-view">
                                                       <img-comparison-slider class="rounded-lg shadow-sm">
-                                                          <img slot="first" src="${screenshot.baseline}" alt="Baseline">
-                                                          <img slot="second" src="${screenshot.current}" alt="Current">
+                                                          <img slot="first" src="${
+                                                            screenshot.baseline
+                                                          }" alt="Baseline">
+                                                          <img slot="second" src="${
+                                                            screenshot.current
+                                                          }" alt="Current">
                                                       </img-comparison-slider>
                                                   </div>
-                                                  ${screenshot.diff ? `
+                                                  ${
+                                                    screenshot.diff
+                                                      ? `
                                                       <div class="diff-view">
                                                           <img src="${screenshot.diff}" alt="Diff" class="w-full rounded-lg shadow-sm">
                                                       </div>
-                                                  ` : ''}
+                                                  `
+                                                      : ""
+                                                  }
                                               </div>
                                           </div>
                                       `
@@ -221,8 +234,8 @@ function generateReport() {
 
       <script>
           function toggleCollapse(index) {
-              const content = document.getElementById(`collapse-${index}`);
-              const arrow = document.getElementById(`arrow-${index}`);
+              const content = document.getElementById('collapse-' + index);
+              const arrow = document.getElementById('arrow-' + index);
               
               if (content.classList.contains('hidden')) {
                   content.classList.remove('hidden');
@@ -234,7 +247,7 @@ function generateReport() {
           }
 
           function switchView(urlIndex, screenshotIndex, mode) {
-              const container = document.getElementById(`container-${urlIndex}-${screenshotIndex}`);
+              const container = document.getElementById('container-' + urlIndex + '-' + screenshotIndex);
               const buttons = container.parentElement.querySelectorAll('.view-mode-btn');
               
               buttons.forEach(btn => {
