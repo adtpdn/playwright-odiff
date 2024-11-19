@@ -31,12 +31,16 @@ function generateReport() {
   const currentDir = path.join(screenshotsDir, latestDir);
 
   function parseScreenshotName(filename) {
+    console.log("Processing filename:", filename);
+
     const parts = filename.replace(".png", "").split("-");
-    const resolution = parts.pop();
-    const device = parts.pop();
-    const browserRaw = parts.pop();
-    const page = parts.pop();
-    const domain = parts.join("-");
+    console.log("Split parts:", parts);
+
+    const resolution = parts.pop(); // 375x667
+    const device = parts.pop(); // mobile
+    const browserRaw = parts.pop().toLowerCase(); // firefox or chromium
+    const page = parts[1]; // about
+    const domain = parts[0]; // adengroupcom
 
     // Map browser names to proper display names
     const browserMap = {
@@ -45,20 +49,30 @@ function generateReport() {
       firefox: "Firefox",
       chrome: "Chrome",
       mozilla: "Firefox",
+      safari: "Safari",
     };
+
+    console.log(
+      `Browser raw: ${browserRaw}, mapped to: ${
+        browserMap[browserRaw] || browserRaw
+      }`
+    );
 
     const browser = browserMap[browserRaw] || browserRaw;
 
     const displayUrl =
       page === "home" ? `${domain}.com` : `${domain}.com/${page}`;
 
-    return {
+    const result = {
       url: displayUrl,
       browser,
       device,
       resolution,
       fullName: filename,
     };
+
+    console.log("Parsed result:", result);
+    return result;
   }
 
   const screenshots = fs
