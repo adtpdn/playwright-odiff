@@ -1,27 +1,18 @@
 const fs = require("fs");
 const path = require("path");
 
-// Configuration
 const screenshotsDir = path.join(process.cwd(), "screenshots");
 const publicDir = path.join(process.cwd(), "public");
-const reportFileName = "visual-test-report.html";
 
-// Create public directory if it doesn't exist
 if (!fs.existsSync(publicDir)) {
   fs.mkdirSync(publicDir);
 }
 
-// Get timestamps and sort them
 const timestamps = fs
   .readdirSync(screenshotsDir)
   .filter((f) => f !== "baseline")
   .sort()
   .reverse();
-
-if (timestamps.length === 0) {
-  console.error("No screenshot directories found!");
-  process.exit(1);
-}
 
 const latestDir = timestamps[0];
 const baselineDir = path.join(screenshotsDir, "baseline");
@@ -32,43 +23,32 @@ const screenshots = fs
   .readdirSync(currentDir)
   .filter((f) => !f.startsWith("diff-"));
 
-// Parse screenshot filename to get metadata
+// Parse screenshot filenames to get metadata
 function parseScreenshotName(filename) {
-  const parts = filename.replace(".png", "").split("-");
-  const resolution = parts.slice(-1)[0].split("x");
-  const browser = parts.find((p) =>
-    ["chromium", "firefox", "webkit"].includes(p)
-  );
-  const deviceType = parts.find((p) =>
-    ["desktop", "tablet", "mobile"].includes(p)
-  );
-  const url = parts.slice(0, parts.indexOf(browser)).join("-");
-
+  const [url, browser, device, resolution] = filename
+    .replace(".png", "")
+    .split("-");
   return {
     url,
     browser,
-    deviceType,
-    width: resolution[0],
-    height: resolution[1],
-    timestamp: new Date().toLocaleString(),
+    device,
+    resolution,
   };
 }
 
 // Group screenshots by URL
-const groupedScreenshots = screenshots.reduce((acc, screenshot) => {
-  const metadata = parseScreenshotName(screenshot);
-  if (!acc[metadata.url]) {
-    acc[metadata.url] = [];
+const groupedByUrl = {};
+screenshots.forEach((screenshot) => {
+  const { url } = parseScreenshotName(screenshot);
+  if (!groupedByUrl[url]) {
+    groupedByUrl[url] = [];
   }
-  acc[metadata.url].push({
-    filename: screenshot,
-    ...metadata,
+  groupedByUrl[url].push({
+    name: screenshot,
     baseline: path.join("screenshots/baseline", screenshot),
     current: path.join(`screenshots/${latestDir}`, screenshot),
-    diff: path.join(`screenshots/${latestDir}`, `diff-${screenshot}`),
   });
-  return acc;
-}, {});
+});
 
 const htmlTemplate = `
 <!DOCTYPE html>
@@ -83,64 +63,58 @@ const htmlTemplate = `
 </head>
 <body class="bg-gray-50 min-h-screen">
     <div class="container mx-auto px-4 py-8">
-        <header class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-800">Visual Testing Report</h1>
-            <p class="text-gray-600 mt-2">Generated on: ${new Date().toLocaleString()}</p>
-            <div class="mt-4">
-                <span class="text-sm font-medium text-gray-500">Test Run Directory: </span>
-                <span class="text-sm text-gray-900">${latestDir}</span>
-            </div>
-        </header>
-
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">Visual Testing Report</h1>
+        
         <div class="space-y-8">
-            ${Object.entries(groupedScreenshots)
+            ${Object.entries(groupedByUrl)
               .map(
-                ([url, items], urlIndex) => `
+                ([url, screenshots], urlIndex) => `
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
                     <button 
                         class="w-full px-6 py-4 text-left hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200"
-                        onclick="toggleCollapse('url-${urlIndex}')"
+                        onclick="toggleCollapse(${urlIndex})"
                     >
                         <div class="flex items-center justify-between">
-                            <div>
-                                <h2 class="text-lg font-semibold text-gray-700">${url}</h2>
-                                <p class="text-sm text-gray-500 mt-1">
-                                    ${items.length} screenshots | ${
-                  new Set(items.map((i) => i.deviceType)).size
-                } devices
-                                </p>
-                            </div>
-                            <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-200" id="arrow-url-${urlIndex}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <h2 class="text-lg font-semibold text-gray-700">${url}</h2>
+                            <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-200" id="arrow-${urlIndex}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
                         </div>
                     </button>
                     
-                    <div class="hidden px-6 py-4" id="collapse-url-${urlIndex}">
-                        ${items
-                          .map(
-                            (item, itemIndex) => `
-                            <div class="border-t first:border-t-0 py-4">
-                                <div class="mb-4">
-                                    <h3 class="font-medium text-gray-700">${item.browser} - ${item.deviceType}</h3>
-                                    <p class="text-sm text-gray-500">${item.width}x${item.height}</p>
-                                </div>
-                                
-                                <div class="max-w-4xl mx-auto">
-                                    <img-comparison-slider class="shadow-lg rounded-lg">
-                                        <img slot="first" src="${item.baseline}" class="w-full" alt="Baseline">
-                                        <img slot="second" src="${item.current}" class="w-full" alt="Current">
-                                    </img-comparison-slider>
-                                    
-                                    <div class="mt-6">
-                                        <p class="font-medium text-gray-700 mb-2">Difference Visualization</p>
-                                        <img src="${item.diff}" class="w-full rounded-lg shadow" alt="Difference">
+                    <div class="hidden px-6 py-4" id="collapse-${urlIndex}">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            ${screenshots
+                              .map(
+                                (screenshot) => `
+                                <div class="space-y-2">
+                                    <div class="text-sm font-medium text-gray-700">
+                                        ${
+                                          parseScreenshotName(screenshot.name)
+                                            .browser
+                                        } - 
+                                        ${
+                                          parseScreenshotName(screenshot.name)
+                                            .device
+                                        } - 
+                                        ${
+                                          parseScreenshotName(screenshot.name)
+                                            .resolution
+                                        }
                                     </div>
+                                    <img-comparison-slider class="rounded-lg shadow">
+                                        <img slot="first" src="${
+                                          screenshot.baseline
+                                        }" class="w-full" alt="Baseline">
+                                        <img slot="second" src="${
+                                          screenshot.current
+                                        }" class="w-full" alt="Current">
+                                    </img-comparison-slider>
                                 </div>
-                            </div>
-                        `
-                          )
-                          .join("")}
+                            `
+                              )
+                              .join("")}
+                        </div>
                     </div>
                 </div>
             `
@@ -150,9 +124,9 @@ const htmlTemplate = `
     </div>
 
     <script>
-        function toggleCollapse(id) {
-            const content = document.getElementById(\`collapse-\${id}\`);
-            const arrow = document.getElementById(\`arrow-\${id}\`);
+        function toggleCollapse(index) {
+            const content = document.getElementById(\`collapse-\${index}\`);
+            const arrow = document.getElementById(\`arrow-\${index}\`);
             
             if (content.classList.contains('hidden')) {
                 content.classList.remove('hidden');
@@ -167,12 +141,8 @@ const htmlTemplate = `
 </html>
 `;
 
-// Write the HTML report
-fs.writeFileSync(path.join(publicDir, reportFileName), htmlTemplate);
+fs.writeFileSync(path.join(publicDir, "index.html"), htmlTemplate);
 
-// Copy screenshots to public directory
 fs.cpSync(screenshotsDir, path.join(publicDir, "screenshots"), {
   recursive: true,
 });
-
-console.log(`Report generated: ${path.join(publicDir, reportFileName)}`);
