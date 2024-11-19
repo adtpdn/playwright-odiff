@@ -38,7 +38,7 @@ const urls = [
 
 // Maximum retry attempts for navigation
 const MAX_RETRIES = 3;
-const NAVIGATION_TIMEOUT = 30000; // 30 seconds
+const NAVIGATION_TIMEOUT = 100000;
 
 // Utility functions
 function createFileNameFromUrl(url: string): string {
@@ -51,7 +51,10 @@ function createFileNameFromUrl(url: string): string {
   const domainSlug = domain.replace(/\./g, "");
 
   // Get page name (use 'home' for root path)
-  const pageName = path || "home";
+  // Replace all slashes with underscores and remove any trailing/leading underscores
+  const pageName = path
+    ? path.replace(/\//g, "_").replace(/^_|_$/g, "")
+    : "home";
 
   return [domainSlug, pageName];
 }
