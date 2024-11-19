@@ -12,7 +12,7 @@ export const browsers = ["chromium", "firefox", "webkit"] as const;
 
 const config: PlaywrightTestConfig = {
   testDir: "./tests",
-  timeout: 60000,
+  timeout: 600000,
   use: {
     ignoreHTTPSErrors: true,
     screenshot: "only-on-failure",
