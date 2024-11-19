@@ -143,6 +143,15 @@ function generateReport() {
           .view-diff .diff-view {
               display: block;
           }
+          .browser-section {
+              margin-bottom: 1rem;
+          }
+          .browser-content {
+              display: none;
+          }
+          .browser-content.active {
+              display: block;
+          }
       </style>
   </head>
   <body class="bg-gray-50">
@@ -177,64 +186,97 @@ function generateReport() {
                       </button>
                       
                       <div class="hidden" id="collapse-${urlIndex}">
-                          ${Array.from(data.devices)
+                          ${Array.from(data.browsers)
                             .map(
-                              (device) => `
-                              <div class="border-t border-gray-200 px-6 py-4">
-                                  <h3 class="text-md font-medium text-gray-700 mb-4">${device}</h3>
-                                  ${data.screenshots
-                                    .filter((s) => s.device === device)
-                                    .map(
-                                      (screenshot, screenshotIndex) => `
-                                          <div class="space-y-2 mb-8">
-                                              <div class="flex justify-between items-center">
-                                                  <div class="text-sm font-medium text-gray-600">
-                                                      ${screenshot.browser} - ${
-                                        screenshot.resolution
-                                      }
-                                                  </div>
-                                                  <div class="view-modes">
-                                                      <button class="view-mode-btn active" 
-                                                              onclick="switchView(${urlIndex}, ${screenshotIndex}, 'comparison')">
-                                                          Slider
-                                                      </button>
-                                                      ${
-                                                        screenshot.diff
-                                                          ? `
-                                                          <button class="view-mode-btn" 
-                                                                  onclick="switchView(${urlIndex}, ${screenshotIndex}, 'diff')">
-                                                              Diff
-                                                          </button>
-                                                      `
-                                                          : ""
-                                                      }
-                                                  </div>
-                                              </div>
-                                              <div class="comparison-container" id="container-${urlIndex}-${screenshotIndex}">
-                                                  <div class="comparison-view">
-                                                      <img-comparison-slider class="rounded-lg shadow-sm">
-                                                          <img slot="first" src="${
-                                                            screenshot.baseline
-                                                          }" alt="Baseline" loading="lazy">
-                                                          <img slot="second" src="${
-                                                            screenshot.current
-                                                          }" alt="Current" loading="lazy">
-                                                      </img-comparison-slider>
-                                                  </div>
-                                                  ${
-                                                    screenshot.diff
-                                                      ? `
-                                                      <div class="diff-view">
-                                                          <img src="${screenshot.diff}" alt="Diff" class="w-full rounded-lg shadow-sm" loading="lazy">
+                              (browser, browserIndex) => `
+                              <div class="browser-section border-t border-gray-200">
+                                  <button 
+                                      class="w-full px-6 py-3 text-left bg-gray-50 hover:bg-gray-100 focus:outline-none"
+                                      onclick="toggleBrowser(${urlIndex}, ${browserIndex})"
+                                  >
+                                      <div class="flex items-center justify-between">
+                                          <h3 class="text-md font-medium text-gray-700">${browser}</h3>
+                                          <svg class="w-4 h-4 text-gray-500 transform transition-transform duration-200" 
+                                              id="browser-arrow-${urlIndex}-${browserIndex}"
+                                              fill="none" 
+                                              stroke="currentColor" 
+                                              viewBox="0 0 24 24"
+                                          >
+                                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                          </svg>
+                                      </div>
+                                  </button>
+                                  <div class="browser-content" id="browser-content-${urlIndex}-${browserIndex}">
+                                      ${Array.from(data.devices)
+                                        .map(
+                                          (device) => `
+                                          <div class="px-6 py-4">
+                                              <h4 class="text-sm font-medium text-gray-600 mb-4">${device}</h4>
+                                              ${data.screenshots
+                                                .filter(
+                                                  (s) =>
+                                                    s.device === device &&
+                                                    s.browser === browser
+                                                )
+                                                .map(
+                                                  (
+                                                    screenshot,
+                                                    screenshotIndex
+                                                  ) => `
+                                                      <div class="space-y-2 mb-8">
+                                                          <div class="flex justify-between items-center">
+                                                              <div class="text-sm font-medium text-gray-600">
+                                                                  ${
+                                                                    screenshot.resolution
+                                                                  }
+                                                              </div>
+                                                              <div class="view-modes">
+                                                                  <button class="view-mode-btn active" 
+                                                                          onclick="switchView(${urlIndex}, ${browserIndex}, ${screenshotIndex}, 'comparison')">
+                                                                      Slider
+                                                                  </button>
+                                                                  ${
+                                                                    screenshot.diff
+                                                                      ? `
+                                                                      <button class="view-mode-btn" 
+                                                                              onclick="switchView(${urlIndex}, ${browserIndex}, ${screenshotIndex}, 'diff')">
+                                                                          Diff
+                                                                      </button>
+                                                                  `
+                                                                      : ""
+                                                                  }
+                                                              </div>
+                                                          </div>
+                                                          <div class="comparison-container" id="container-${urlIndex}-${browserIndex}-${screenshotIndex}">
+                                                              <div class="comparison-view">
+                                                                  <img-comparison-slider class="rounded-lg shadow-sm">
+                                                                      <img slot="first" src="${
+                                                                        screenshot.baseline
+                                                                      }" alt="Baseline" loading="lazy">
+                                                                      <img slot="second" src="${
+                                                                        screenshot.current
+                                                                      }" alt="Current" loading="lazy">
+                                                                  </img-comparison-slider>
+                                                              </div>
+                                                              ${
+                                                                screenshot.diff
+                                                                  ? `
+                                                                  <div class="diff-view">
+                                                                      <img src="${screenshot.diff}" alt="Diff" class="w-full rounded-lg shadow-sm" loading="lazy">
+                                                                  </div>
+                                                              `
+                                                                  : ""
+                                                              }
+                                                          </div>
                                                       </div>
                                                   `
-                                                      : ""
-                                                  }
-                                              </div>
+                                                )
+                                                .join("")}
                                           </div>
                                       `
-                                    )
-                                    .join("")}
+                                        )
+                                        .join("")}
+                                  </div>
                               </div>
                           `
                             )
@@ -261,8 +303,21 @@ function generateReport() {
               }
           }
 
-          function switchView(urlIndex, screenshotIndex, mode) {
-              const container = document.getElementById('container-' + urlIndex + '-' + screenshotIndex);
+          function toggleBrowser(urlIndex, browserIndex) {
+              const content = document.getElementById('browser-content-' + urlIndex + '-' + browserIndex);
+              const arrow = document.getElementById('browser-arrow-' + urlIndex + '-' + browserIndex);
+              
+              if (content.classList.contains('active')) {
+                  content.classList.remove('active');
+                  arrow.style.transform = 'rotate(0deg)';
+              } else {
+                  content.classList.add('active');
+                  arrow.style.transform = 'rotate(180deg)';
+              }
+          }
+
+          function switchView(urlIndex, browserIndex, screenshotIndex, mode) {
+              const container = document.getElementById('container-' + urlIndex + '-' + browserIndex + '-' + screenshotIndex);
               if (!container) return;
 
               const parentElement = container.closest('.space-y-2');
