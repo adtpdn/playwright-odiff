@@ -30,23 +30,14 @@ function generateReport() {
   const baselineDir = path.join(screenshotsDir, "baseline");
   const currentDir = path.join(screenshotsDir, latestDir);
 
-  // Parse screenshot metadata
   function parseScreenshotName(filename) {
-    // Remove .png extension and split by dashes
     const parts = filename.replace('.png', '').split('-');
-    
-    // Get viewport dimensions (last element)
     const resolution = parts.pop();
-    // Get device type (second to last)
     const device = parts.pop();
-    // Get browser name (third to last)
     const browser = parts.pop();
-    // Get page name (fourth to last)
     const page = parts.pop();
-    // Remaining parts form the domain
     const domain = parts.join('-');
 
-    // Reconstruct URL for display
     const displayUrl = page === 'home' 
       ? `${domain}.com` 
       : `${domain}.com/${page}`;
@@ -60,7 +51,6 @@ function generateReport() {
     };
   }
 
-  // Group screenshots by URL
   const screenshots = fs
     .readdirSync(currentDir)
     .filter((f) => !f.startsWith("diff-"));
@@ -79,12 +69,16 @@ function generateReport() {
       };
     }
 
+    const diffFile = `diff-${screenshot}`;
+    const hasDiff = fs.existsSync(path.join(currentDir, diffFile));
+
     groupedByUrl[metadata.url].browsers.add(metadata.browser);
     groupedByUrl[metadata.url].devices.add(metadata.device);
     groupedByUrl[metadata.url].screenshots.push({
       ...metadata,
       baseline: path.join("screenshots/baseline", screenshot),
       current: path.join(`screenshots/${latestDir}`, screenshot),
+      diff: hasDiff ? path.join(`screenshots/${latestDir}`, diffFile) : null
     });
   });
 
@@ -103,6 +97,37 @@ function generateReport() {
               display: grid;
               grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
               gap: 1.5rem;
+          }
+          .view-modes {
+              display: flex;
+              gap: 0.5rem;
+              margin-bottom: 1rem;
+          }
+          .view-mode-btn {
+              padding: 0.25rem 0.75rem;
+              border-radius: 0.375rem;
+              font-size: 0.875rem;
+              cursor: pointer;
+          }
+          .view-mode-btn.active {
+              background-color: #4f46e5;
+              color: white;
+          }
+          .view-mode-btn:not(.active) {
+              background-color: #e5e7eb;
+              color: #374151;
+          }
+          .comparison-view, .diff-view {
+              width: 100%;
+          }
+          .diff-view {
+              display: none;
+          }
+          .view-diff .comparison-view {
+              display: none;
+          }
+          .view-diff .diff-view {
+              display: block;
           }
       </style>
   </head>
@@ -143,24 +168,45 @@ function generateReport() {
                               (device) => `
                               <div class="border-t border-gray-200 px-6 py-4">
                                   <h3 class="text-md font-medium text-gray-700 mb-4">${device}</h3>
-                                  <div class="screenshot-grid">
-                                      ${data.screenshots
-                                        .filter((s) => s.device === device)
-                                        .map(
-                                          (screenshot) => `
-                                              <div class="space-y-2">
+                                  ${data.screenshots
+                                    .filter((s) => s.device === device)
+                                    .map(
+                                      (screenshot, screenshotIndex) => `
+                                          <div class="space-y-2 mb-8">
+                                              <div class="flex justify-between items-center">
                                                   <div class="text-sm font-medium text-gray-600">
                                                       ${screenshot.browser} - ${screenshot.resolution}
                                                   </div>
-                                                  <img-comparison-slider class="rounded-lg shadow-sm">
-                                                      <img slot="first" src="${screenshot.baseline}" alt="Baseline">
-                                                      <img slot="second" src="${screenshot.current}" alt="Current">
-                                                  </img-comparison-slider>
+                                                  <div class="view-modes">
+                                                      <button class="view-mode-btn active" 
+                                                              onclick="switchView(${urlIndex}, ${screenshotIndex}, 'comparison')">
+                                                          Slider
+                                                      </button>
+                                                      ${screenshot.diff ? `
+                                                          <button class="view-mode-btn" 
+                                                                  onclick="switchView(${urlIndex}, ${screenshotIndex}, 'diff')">
+                                                              Diff
+                                                          </button>
+                                                      ` : ''}
+                                                  </div>
                                               </div>
-                                          `
-                                        )
-                                        .join("")}
-                                  </div>
+                                              <div class="comparison-container" id="container-${urlIndex}-${screenshotIndex}">
+                                                  <div class="comparison-view">
+                                                      <img-comparison-slider class="rounded-lg shadow-sm">
+                                                          <img slot="first" src="${screenshot.baseline}" alt="Baseline">
+                                                          <img slot="second" src="${screenshot.current}" alt="Current">
+                                                      </img-comparison-slider>
+                                                  </div>
+                                                  ${screenshot.diff ? `
+                                                      <div class="diff-view">
+                                                          <img src="${screenshot.diff}" alt="Diff" class="w-full rounded-lg shadow-sm">
+                                                      </div>
+                                                  ` : ''}
+                                              </div>
+                                          </div>
+                                      `
+                                    )
+                                    .join("")}
                               </div>
                           `
                             )
@@ -186,6 +232,27 @@ function generateReport() {
                   arrow.style.transform = 'rotate(0deg)';
               }
           }
+
+          function switchView(urlIndex, screenshotIndex, mode) {
+              const container = document.getElementById(`container-${urlIndex}-${screenshotIndex}`);
+              const buttons = container.parentElement.querySelectorAll('.view-mode-btn');
+              
+              buttons.forEach(btn => {
+                  btn.classList.remove('active');
+                  if (
+                      (mode === 'comparison' && btn.textContent.trim() === 'Slider') ||
+                      (mode === 'diff' && btn.textContent.trim() === 'Diff')
+                  ) {
+                      btn.classList.add('active');
+                  }
+              });
+
+              if (mode === 'diff') {
+                  container.classList.add('view-diff');
+              } else {
+                  container.classList.remove('view-diff');
+              }
+          }
       </script>
   </body>
   </html>
@@ -193,7 +260,6 @@ function generateReport() {
 
   fs.writeFileSync(path.join(publicDir, "index.html"), htmlTemplate);
 
-  // Copy screenshots to public directory
   fs.cpSync(screenshotsDir, path.join(publicDir, "screenshots"), {
     recursive: true,
   });

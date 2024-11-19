@@ -3,6 +3,7 @@ import { test } from "@playwright/test";
 import path from "path";
 import fs from "fs";
 import { devices, browsers } from "../playwright.config";
+import { generateReport } from "../generate-report";
 import { compareScreenshots } from "../utils/compare-screenshots";
 
 // Configuration
@@ -106,7 +107,6 @@ test("Screenshot comparison across devices and browsers", async ({
 });
 
 test.afterAll(async () => {
-  const { generateReport } = require("../generate-report");
   await generateReport();
   console.log("📊 Visual regression report generated");
 });
