@@ -10,7 +10,7 @@ import { compareScreenshots } from "../utils/compare-screenshots";
 const urls = [
   "https://adenenergies.com/about/",
   "https://adenenergies.com/contact/",
-  "https://adenenergies.com/home/",
+  "https://adenenergies.com/",
   "https://adenenergies.com/media/",
   "https://adenenergies.com/media/insights/",
   "https://adenenergies.com/media/news/",
@@ -18,7 +18,7 @@ const urls = [
   "https://adenenergies.com/solutions/",
   "https://adenenergies.com/zh/about/",
   "https://adenenergies.com/zh/contact/",
-  "https://adenenergies.com/zh/home/",
+  "https://adenenergies.com/zh/",
   "https://adenenergies.com/zh/media/",
   "https://adenenergies.com/zh/media/insights/",
   "https://adenenergies.com/zh/media/news/",
@@ -99,7 +99,7 @@ async function navigateWithRetry(page, url, retryCount = 0) {
 
     // Additional wait for any remaining dynamic content
     try {
-      await page.waitForLoadState("networkidle", { timeout: 5000 }); // Short timeout for networkidle
+      await page.waitForLoadState("networkidle", { timeout: 10000 }); // Short timeout for networkidle
     } catch (error) {
       console.log(`Network not completely idle for ${url}, continuing anyway`);
     }
@@ -144,7 +144,7 @@ test("Screenshot comparison across devices and browsers", async ({
         await navigateWithRetry(page, url);
 
         // Additional waits for dynamic content
-        await page.waitForTimeout(2000);
+        await page.waitForTimeout(10000);
 
         // Take screenshot
         const currentPath = path.join(currentDir, browserName, fileName);
