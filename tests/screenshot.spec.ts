@@ -110,7 +110,7 @@ test("Screenshot comparison across devices and browsers", async ({
 });
 
 test.afterAll(async () => {
-  const { generateReport } = require("./generate-report");
+  const { generateReport } = require("../generate-report");
   await generateReport();
   console.log("📊 Visual regression report generated");
 });
