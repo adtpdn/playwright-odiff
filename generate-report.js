@@ -60,8 +60,7 @@ function generateReport() {
 
     const browser = browserMap[browserRaw] || browserRaw;
 
-    const displayUrl =
-      page === "home" ? `${domain}.com` : `${domain}.com/${page}`;
+    const displayUrl = page === "home" ? `${domain}` : `${domain}/${page}`;
 
     const result = {
       url: displayUrl,
