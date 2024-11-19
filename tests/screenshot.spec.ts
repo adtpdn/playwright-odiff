@@ -3,7 +3,7 @@ import { test } from "@playwright/test";
 import path from "path";
 import fs from "fs";
 import { devices, browsers } from "../playwright.config";
-import { compareScreenshots } from "./utils/compare-screenshots";
+import { compareScreenshots } from "../utils/compare-screenshots";
 
 // Configuration
 const urls = [

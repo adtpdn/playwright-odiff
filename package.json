@@ -1,9 +1,9 @@
 {
   "name": "playwright-odiff",
   "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
     "test": "playwright test",
+    "test:update-baseline": "playwright test --update-snapshots",
     "report": "node generate-report.js"
   },
   "keywords": [],
@@ -11,7 +11,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@playwright/test": "^1.40.0",
+    "@playwright/test": "^1.39.0",
     "odiff-bin": "^2.6.1"
   },
   "devDependencies": {
