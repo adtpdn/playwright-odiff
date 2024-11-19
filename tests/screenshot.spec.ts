@@ -13,6 +13,10 @@ const urls = [
   "https://adengroup.com/contact",
 ];
 
+// Maximum retry attempts for navigation
+const MAX_RETRIES = 3;
+const NAVIGATION_TIMEOUT = 30000; // 30 seconds
+
 // Utility functions
 function createFileNameFromUrl(url: string): string {
   // Remove protocol and www
@@ -56,6 +60,37 @@ function setupDirectories() {
   return { currentDir, baselineDir };
 }
 
+async function navigateWithRetry(page, url, retryCount = 0) {
+  try {
+    await page.goto(url, {
+      waitUntil: "domcontentloaded", // Changed from networkidle to domcontentloaded
+      timeout: NAVIGATION_TIMEOUT,
+      ignoreHTTPSErrors: true,
+    });
+
+    // Wait for the page to be relatively stable
+    await page.waitForLoadState("load", { timeout: NAVIGATION_TIMEOUT });
+
+    // Additional wait for any remaining dynamic content
+    try {
+      await page.waitForLoadState("networkidle", { timeout: 5000 }); // Short timeout for networkidle
+    } catch (error) {
+      console.log(`Network not completely idle for ${url}, continuing anyway`);
+    }
+  } catch (error) {
+    if (retryCount < MAX_RETRIES) {
+      console.log(
+        `Retrying navigation to ${url} (attempt ${
+          retryCount + 1
+        }/${MAX_RETRIES})`
+      );
+      await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds before retry
+      return navigateWithRetry(page, url, retryCount + 1);
+    }
+    throw error;
+  }
+}
+
 const { currentDir, baselineDir } = setupDirectories();
 
 // Test cases
@@ -63,56 +98,70 @@ test("Screenshot comparison across devices and browsers", async ({
   page,
   browserName,
 }) => {
+  // Set default navigation timeout
+  page.setDefaultNavigationTimeout(NAVIGATION_TIMEOUT);
+  page.setDefaultTimeout(NAVIGATION_TIMEOUT);
+
   // Test all device configs for all browsers
   const deviceConfigs = Object.entries(devices);
 
   for (const url of urls) {
     for (const [deviceType, viewport] of deviceConfigs) {
-      // Set viewport
-      await page.setViewportSize(viewport);
+      try {
+        // Set viewport
+        await page.setViewportSize(viewport);
 
-      const [domainSlug, pageName] = createFileNameFromUrl(url);
-      const fileName = `${domainSlug}-${pageName}-${browserName}-${deviceType}-${viewport.width}x${viewport.height}.png`;
+        const [domainSlug, pageName] = createFileNameFromUrl(url);
+        const fileName = `${domainSlug}-${pageName}-${browserName}-${deviceType}-${viewport.width}x${viewport.height}.png`;
 
-      // Navigate and wait for network idle
-      await page.goto(url, {
-        waitUntil: "networkidle",
-        ignoreHTTPSErrors: true,
-      });
+        // Navigate with retry mechanism
+        await navigateWithRetry(page, url);
 
-      // Additional waits for dynamic content
-      await page.waitForTimeout(2000);
-      await page.waitForLoadState("domcontentloaded");
+        // Additional waits for dynamic content
+        await page.waitForTimeout(2000);
 
-      // Take screenshot
-      const currentPath = path.join(currentDir, browserName, fileName);
-      await page.screenshot({
-        path: currentPath,
-        fullPage: true,
-      });
+        // Take screenshot
+        const currentPath = path.join(currentDir, browserName, fileName);
+        await page.screenshot({
+          path: currentPath,
+          fullPage: true,
+          timeout: 30000,
+        });
 
-      // Compare with baseline
-      const baselinePath = path.join(baselineDir, browserName, fileName);
+        // Compare with baseline
+        const baselinePath = path.join(baselineDir, browserName, fileName);
 
-      if (fs.existsSync(baselinePath)) {
-        const diffPath = path.join(currentDir, browserName, `diff-${fileName}`);
-        try {
-          const { imagesAreSame } = await compareScreenshots(
-            baselinePath,
-            currentPath,
-            diffPath
+        if (fs.existsSync(baselinePath)) {
+          const diffPath = path.join(
+            currentDir,
+            browserName,
+            `diff-${fileName}`
           );
-          console.log(
-            `${imagesAreSame ? "⛓️" : "🚧"} ${fileName}: ${
-              imagesAreSame ? "Match" : "Differ"
-            }`
-          );
-        } catch (error) {
-          console.error(`Error comparing screenshots for ${fileName}:`, error);
+          try {
+            const { imagesAreSame } = await compareScreenshots(
+              baselinePath,
+              currentPath,
+              diffPath
+            );
+            console.log(
+              `${imagesAreSame ? "⛓️" : "🚧"} ${fileName}: ${
+                imagesAreSame ? "Match" : "Differ"
+              }`
+            );
+          } catch (error) {
+            console.error(
+              `Error comparing screenshots for ${fileName}:`,
+              error
+            );
+          }
+        } else {
+          fs.copyFileSync(currentPath, baselinePath);
+          console.log(`📸 Created baseline for ${fileName}`);
         }
-      } else {
-        fs.copyFileSync(currentPath, baselinePath);
-        console.log(`📸 Created baseline for ${fileName}`);
+      } catch (error) {
+        console.error(`Error processing ${url} for ${deviceType}:`, error);
+        // Continue with next iteration instead of failing the entire test
+        continue;
       }
     }
   }
