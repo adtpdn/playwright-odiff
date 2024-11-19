@@ -36,26 +36,23 @@ const urls = [
   "https://adengroup.com/cn/media/",
 ];
 
-// Maximum retry attempts for navigation
+// Constants
 const MAX_RETRIES = 3;
-const NAVIGATION_TIMEOUT = 100000;
+const NAVIGATION_TIMEOUT = 60000; // Reduced from 100000
+const PAGE_TIMEOUT = 30000;
+const NETWORK_IDLE_TIMEOUT = 10000;
+const RENDER_TIMEOUT = 10000;
+const CHUNK_SIZE = 5;
 
 // Utility functions
 function createFileNameFromUrl(url: string): string {
-  // Remove protocol and www
   const urlObj = new URL(url);
   const domain = urlObj.hostname.replace("www.", "");
   const path = urlObj.pathname.replace(/^\/|\/$/g, "");
-
-  // Convert domain to single string
   const domainSlug = domain.replace(/\./g, "");
-
-  // Get page name (use 'home' for root path)
-  // Replace all slashes with underscores and remove any trailing/leading underscores
   const pageName = path
     ? path.replace(/\//g, "_").replace(/^_|_$/g, "")
     : "home";
-
   return [domainSlug, pageName];
 }
 
@@ -64,14 +61,12 @@ function setupDirectories() {
   const currentDir = path.join(screenshotsDir);
   const baselineDir = path.join(screenshotsDir, "baseline");
 
-  // Create main directories
   [screenshotsDir, baselineDir].forEach((dir) => {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
   });
 
-  // Create browser-specific directories
   browsers.forEach((browser) => {
     const browserCurrentDir = path.join(currentDir, browser);
     const browserBaselineDir = path.join(baselineDir, browser);
@@ -89,17 +84,23 @@ function setupDirectories() {
 async function navigateWithRetry(page, url, retryCount = 0) {
   try {
     await page.goto(url, {
-      waitUntil: "domcontentloaded", // Changed from networkidle to domcontentloaded
+      waitUntil: "domcontentloaded",
       timeout: NAVIGATION_TIMEOUT,
       ignoreHTTPSErrors: true,
     });
 
-    // Wait for the page to be relatively stable
-    await page.waitForLoadState("load", { timeout: NAVIGATION_TIMEOUT });
-
-    // Additional wait for any remaining dynamic content
+    // Wait for load state with timeout
     try {
-      await page.waitForLoadState("networkidle", { timeout: 10000 }); // Short timeout for networkidle
+      await page.waitForLoadState("load", { timeout: PAGE_TIMEOUT });
+    } catch (error) {
+      console.log(`Load state timeout for ${url}, continuing anyway`);
+    }
+
+    // Wait for network idle with shorter timeout
+    try {
+      await page.waitForLoadState("networkidle", {
+        timeout: NETWORK_IDLE_TIMEOUT,
+      });
     } catch (error) {
       console.log(`Network not completely idle for ${url}, continuing anyway`);
     }
@@ -110,7 +111,7 @@ async function navigateWithRetry(page, url, retryCount = 0) {
           retryCount + 1
         }/${MAX_RETRIES})`
       );
-      await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds before retry
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       return navigateWithRetry(page, url, retryCount + 1);
     }
     throw error;
@@ -121,74 +122,87 @@ const { currentDir, baselineDir } = setupDirectories();
 
 // Test cases
 test("Screenshot comparison across devices and browsers", async ({
-  page,
-  browserName,
+  browser,
 }) => {
-  // Set default navigation timeout
-  page.setDefaultNavigationTimeout(NAVIGATION_TIMEOUT);
-  page.setDefaultTimeout(NAVIGATION_TIMEOUT);
+  // Process URLs in chunks
+  const urlChunks = [];
+  for (let i = 0; i < urls.length; i += CHUNK_SIZE) {
+    urlChunks.push(urls.slice(i, i + CHUNK_SIZE));
+  }
 
-  // Test all device configs for all browsers
   const deviceConfigs = Object.entries(devices);
+  const browserName = browser.browserType().name();
 
-  for (const url of urls) {
-    for (const [deviceType, viewport] of deviceConfigs) {
-      try {
-        // Set viewport
-        await page.setViewportSize(viewport);
+  for (const urlChunk of urlChunks) {
+    // Create new context for each chunk
+    const context = await browser.newContext();
+    const page = await context.newPage();
 
-        const [domainSlug, pageName] = createFileNameFromUrl(url);
-        const fileName = `${domainSlug}-${pageName}-${browserName}-${deviceType}-${viewport.width}x${viewport.height}.png`;
+    try {
+      // Set timeouts
+      page.setDefaultNavigationTimeout(NAVIGATION_TIMEOUT);
+      page.setDefaultTimeout(PAGE_TIMEOUT);
 
-        // Navigate with retry mechanism
-        await navigateWithRetry(page, url);
-
-        // Additional waits for dynamic content
-        await page.waitForTimeout(10000);
-
-        // Take screenshot
-        const currentPath = path.join(currentDir, browserName, fileName);
-        await page.screenshot({
-          path: currentPath,
-          fullPage: true,
-          timeout: 30000,
-        });
-
-        // Compare with baseline
-        const baselinePath = path.join(baselineDir, browserName, fileName);
-
-        if (fs.existsSync(baselinePath)) {
-          const diffPath = path.join(
-            currentDir,
-            browserName,
-            `diff-${fileName}`
-          );
+      for (const url of urlChunk) {
+        for (const [deviceType, viewport] of deviceConfigs) {
           try {
-            const { imagesAreSame } = await compareScreenshots(
-              baselinePath,
-              currentPath,
-              diffPath
-            );
-            console.log(
-              `${imagesAreSame ? "⛓️" : "🚧"} ${fileName}: ${
-                imagesAreSame ? "Match" : "Differ"
-              }`
-            );
+            await page.setViewportSize(viewport);
+
+            const [domainSlug, pageName] = createFileNameFromUrl(url);
+            const fileName = `${domainSlug}-${pageName}-${browserName}-${deviceType}-${viewport.width}x${viewport.height}.png`;
+
+            await navigateWithRetry(page, url);
+
+            // Wait for final renders with reasonable timeout
+            await page.waitForTimeout(RENDER_TIMEOUT);
+
+            // Take screenshot
+            const currentPath = path.join(currentDir, browserName, fileName);
+            await page.screenshot({
+              path: currentPath,
+              fullPage: true,
+              timeout: PAGE_TIMEOUT,
+            });
+
+            // Compare with baseline
+            const baselinePath = path.join(baselineDir, browserName, fileName);
+
+            if (fs.existsSync(baselinePath)) {
+              const diffPath = path.join(
+                currentDir,
+                browserName,
+                `diff-${fileName}`
+              );
+              try {
+                const { imagesAreSame } = await compareScreenshots(
+                  baselinePath,
+                  currentPath,
+                  diffPath
+                );
+                console.log(
+                  `${imagesAreSame ? "⛓️" : "🚧"} ${fileName}: ${
+                    imagesAreSame ? "Match" : "Differ"
+                  }`
+                );
+              } catch (error) {
+                console.error(
+                  `Error comparing screenshots for ${fileName}:`,
+                  error
+                );
+              }
+            } else {
+              fs.copyFileSync(currentPath, baselinePath);
+              console.log(`📸 Created baseline for ${fileName}`);
+            }
           } catch (error) {
-            console.error(
-              `Error comparing screenshots for ${fileName}:`,
-              error
-            );
+            console.error(`Error processing ${url} for ${deviceType}:`, error);
+            continue;
           }
-        } else {
-          fs.copyFileSync(currentPath, baselinePath);
-          console.log(`📸 Created baseline for ${fileName}`);
         }
-      } catch (error) {
-        console.error(`Error processing ${url} for ${deviceType}:`, error);
-        // Continue with next iteration instead of failing the entire test
-        continue;
       }
+    } finally {
+      // Clean up context after each chunk
+      await context.close();
     }
   }
 });
