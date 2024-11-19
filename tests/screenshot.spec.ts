@@ -1,8 +1,18 @@
+// screenshot.spec.ts
 import { test } from "@playwright/test";
 import path from "path";
 import fs from "fs";
+import { devices, browsers } from "../playwright.config";
+import { compareScreenshots } from "./utils/compare-screenshots";
 
-// Simple URL to filename conversion function
+// Configuration
+const urls = [
+  "https://adengroup.com/",
+  "https://adengroup.com/about",
+  "https://adengroup.com/contact",
+];
+
+// Utility functions
 function createFileNameFromUrl(url: string): string {
   return url
     .replace(/^https?:\/\//, "")
@@ -11,49 +21,96 @@ function createFileNameFromUrl(url: string): string {
     .toLowerCase();
 }
 
-const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-const currentDir = path.join(process.cwd(), "screenshots", timestamp);
-const baselineDir = path.join(process.cwd(), "screenshots", "baseline");
+function setupDirectories() {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const screenshotsDir = path.join(process.cwd(), "screenshots");
+  const currentDir = path.join(screenshotsDir, timestamp);
+  const baselineDir = path.join(screenshotsDir, "baseline");
 
-if (!fs.existsSync(currentDir)) {
-  fs.mkdirSync(currentDir, { recursive: true });
+  [screenshotsDir, currentDir, baselineDir].forEach((dir) => {
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+  });
+
+  return { currentDir, baselineDir };
 }
 
-test("capture screenshots", async ({ page, browserName, viewport }) => {
-  const url = "https://adengroup.com/";
-  const urlSlug = createFileNameFromUrl(url);
-  const fileName = `${urlSlug}-${browserName}-${viewport.width}x${viewport.height}.png`;
+const { currentDir, baselineDir } = setupDirectories();
 
-  // Configure page to ignore HTTPS errors
-  await page.goto(url, {
-    waitUntil: "load",
-    ignoreHTTPSErrors: true,
-  });
-  await page.waitForLoadState("networkidle");
-
-  const currentPath = path.join(currentDir, fileName);
-  await page.screenshot({
-    path: currentPath,
-    fullPage: true,
-  });
-
-  // Compare with baseline if it exists
-  const baselinePath = path.join(baselineDir, fileName);
-  if (fs.existsSync(baselinePath)) {
-    const diffPath = path.join(currentDir, `diff-${fileName}`);
-    const { imagesAreSame } = await compareScreenshots(
-      baselinePath,
-      currentPath,
-      diffPath
-    );
-    if (!imagesAreSame) {
-      console.log(`Screenshots differ for ${fileName}`);
-    }
-  } else {
-    // Create baseline if it doesn't exist
-    if (!fs.existsSync(baselineDir)) {
-      fs.mkdirSync(baselineDir, { recursive: true });
-    }
-    fs.copyFileSync(currentPath, baselinePath);
+// Test cases
+test("Screenshot comparison across devices and browsers", async ({
+  page,
+  browserName,
+}) => {
+  // Skip if browser isn't in our config
+  if (!browsers.includes(browserName as (typeof browsers)[number])) {
+    test.skip();
+    return;
   }
+
+  // Determine which device configurations to test based on browser
+  const deviceConfigs = Object.entries(devices).filter(([deviceType]) => {
+    if (browserName === "chromium") {
+      return deviceType === "desktop"; // Chromium only tests desktop
+    }
+    return true; // Other browsers test all devices
+  });
+
+  for (const url of urls) {
+    for (const [deviceType, viewport] of deviceConfigs) {
+      // Set viewport
+      await page.setViewportSize(viewport);
+
+      const urlSlug = createFileNameFromUrl(url);
+      const fileName = `${urlSlug}-${browserName}-${deviceType}-${viewport.width}x${viewport.height}.png`;
+
+      // Navigate and wait for network idle
+      await page.goto(url, {
+        waitUntil: "networkidle",
+        ignoreHTTPSErrors: true,
+      });
+
+      // Additional waits for dynamic content
+      await page.waitForTimeout(2000);
+      await page.waitForLoadState("domcontentloaded");
+
+      // Take screenshot
+      const currentPath = path.join(currentDir, fileName);
+      await page.screenshot({
+        path: currentPath,
+        fullPage: true,
+      });
+
+      // Compare with baseline
+      const baselinePath = path.join(baselineDir, fileName);
+
+      if (fs.existsSync(baselinePath)) {
+        const diffPath = path.join(currentDir, `diff-${fileName}`);
+        try {
+          const { imagesAreSame } = await compareScreenshots(
+            baselinePath,
+            currentPath,
+            diffPath
+          );
+          console.log(
+            `${imagesAreSame ? "✅" : "❌"} ${fileName}: ${
+              imagesAreSame ? "Match" : "Differ"
+            }`
+          );
+        } catch (error) {
+          console.error(`Error comparing screenshots for ${fileName}:`, error);
+        }
+      } else {
+        fs.copyFileSync(currentPath, baselinePath);
+        console.log(`📸 Created baseline for ${fileName}`);
+      }
+    }
+  }
+});
+
+test.afterAll(async () => {
+  const { generateReport } = require("./generate-report");
+  await generateReport();
+  console.log("📊 Visual regression report generated");
 });

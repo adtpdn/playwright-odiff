@@ -1,63 +1,54 @@
+// playwright.config.ts
 import { PlaywrightTestConfig } from "@playwright/test";
+
+// Shared configuration that can be used across all files
+export const devices = {
+  desktop: { width: 1280, height: 720 },
+  tablet: { width: 768, height: 1024 },
+  mobile: { width: 375, height: 667 },
+} as const;
+
+export const browsers = ["chromium", "firefox", "webkit"] as const;
 
 const config: PlaywrightTestConfig = {
   testDir: "./tests",
   timeout: 30000,
   use: {
-    ignoreHTTPSErrors: true, // Add this line
+    ignoreHTTPSErrors: true,
     screenshot: "only-on-failure",
     trace: "retain-on-failure",
   },
   projects: [
-    {
-      name: "Desktop Chrome",
+    // Desktop Projects
+    ...browsers.map((browser) => ({
+      name: `Desktop ${browser}`,
       use: {
-        browserName: "chromium",
-        viewport: { width: 1280, height: 720 },
+        browserName: browser,
+        viewport: devices.desktop,
       },
-    },
-    {
-      name: "Desktop Firefox",
-      use: {
-        browserName: "firefox",
-        viewport: { width: 1280, height: 720 },
-      },
-    },
-    {
-      name: "Desktop Safari",
-      use: {
-        browserName: "webkit",
-        viewport: { width: 1280, height: 720 },
-      },
-    },
-    {
-      name: "Tablet Firefox",
-      use: {
-        browserName: "firefox",
-        viewport: { width: 768, height: 1024 },
-      },
-    },
-    {
-      name: "Tablet Safari",
-      use: {
-        browserName: "webkit",
-        viewport: { width: 768, height: 1024 },
-      },
-    },
-    {
-      name: "Mobile Firefox",
-      use: {
-        browserName: "firefox",
-        viewport: { width: 375, height: 667 },
-      },
-    },
-    {
-      name: "Mobile Safari",
-      use: {
-        browserName: "webkit",
-        viewport: { width: 375, height: 667 },
-      },
-    },
+    })),
+
+    // Tablet Projects (excluding Chromium as per original config)
+    ...browsers
+      .filter((b) => b !== "chromium")
+      .map((browser) => ({
+        name: `Tablet ${browser}`,
+        use: {
+          browserName: browser,
+          viewport: devices.tablet,
+        },
+      })),
+
+    // Mobile Projects (excluding Chromium as per original config)
+    ...browsers
+      .filter((b) => b !== "chromium")
+      .map((browser) => ({
+        name: `Mobile ${browser}`,
+        use: {
+          browserName: browser,
+          viewport: devices.mobile,
+        },
+      })),
   ],
 };
 
