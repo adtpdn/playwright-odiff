@@ -34,9 +34,20 @@ function generateReport() {
     const parts = filename.replace(".png", "").split("-");
     const resolution = parts.pop();
     const device = parts.pop();
-    const browser = parts.pop();
+    const browserRaw = parts.pop();
     const page = parts.pop();
     const domain = parts.join("-");
+
+    // Map browser names to proper display names
+    const browserMap = {
+      chromium: "Chrome",
+      webkit: "Safari",
+      firefox: "Firefox",
+      chrome: "Chrome",
+      mozilla: "Firefox",
+    };
+
+    const browser = browserMap[browserRaw] || browserRaw;
 
     const displayUrl =
       page === "home" ? `${domain}.com` : `${domain}.com/${page}`;
@@ -107,6 +118,7 @@ function generateReport() {
               border-radius: 0.375rem;
               font-size: 0.875rem;
               cursor: pointer;
+              transition: all 0.2s;
           }
           .view-mode-btn.active {
               background-color: #4f46e5;
@@ -115,6 +127,9 @@ function generateReport() {
           .view-mode-btn:not(.active) {
               background-color: #e5e7eb;
               color: #374151;
+          }
+          .view-mode-btn:hover:not(.active) {
+              background-color: #d1d5db;
           }
           .comparison-view, .diff-view {
               width: 100%;
@@ -200,17 +215,17 @@ function generateReport() {
                                                       <img-comparison-slider class="rounded-lg shadow-sm">
                                                           <img slot="first" src="${
                                                             screenshot.baseline
-                                                          }" alt="Baseline">
+                                                          }" alt="Baseline" loading="lazy">
                                                           <img slot="second" src="${
                                                             screenshot.current
-                                                          }" alt="Current">
+                                                          }" alt="Current" loading="lazy">
                                                       </img-comparison-slider>
                                                   </div>
                                                   ${
                                                     screenshot.diff
                                                       ? `
                                                       <div class="diff-view">
-                                                          <img src="${screenshot.diff}" alt="Diff" class="w-full rounded-lg shadow-sm">
+                                                          <img src="${screenshot.diff}" alt="Diff" class="w-full rounded-lg shadow-sm" loading="lazy">
                                                       </div>
                                                   `
                                                       : ""
@@ -248,7 +263,12 @@ function generateReport() {
 
           function switchView(urlIndex, screenshotIndex, mode) {
               const container = document.getElementById('container-' + urlIndex + '-' + screenshotIndex);
-              const buttons = container.parentElement.querySelectorAll('.view-mode-btn');
+              if (!container) return;
+
+              const parentElement = container.closest('.space-y-2');
+              if (!parentElement) return;
+
+              const buttons = parentElement.querySelectorAll('.view-mode-btn');
               
               buttons.forEach(btn => {
                   btn.classList.remove('active');
