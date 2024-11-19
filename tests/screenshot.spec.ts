@@ -8,9 +8,32 @@ import { compareScreenshots } from "../utils/compare-screenshots";
 
 // Configuration
 const urls = [
+  "https://adenenergies.com/about/",
+  "https://adenenergies.com/contact/",
+  "https://adenenergies.com/home/",
+  "https://adenenergies.com/media/",
+  "https://adenenergies.com/media/insights/",
+  "https://adenenergies.com/media/news/",
+  "https://adenenergies.com/media/videos/",
+  "https://adenenergies.com/solutions/",
+  "https://adenenergies.com/zh/about/",
+  "https://adenenergies.com/zh/contact/",
+  "https://adenenergies.com/zh/home/",
+  "https://adenenergies.com/zh/media/",
+  "https://adenenergies.com/zh/media/insights/",
+  "https://adenenergies.com/zh/media/news/",
+  "https://adenenergies.com/zh/media/videos/",
+  "https://adenenergies.com/zh/solutions/",
   "https://adengroup.com/",
-  "https://adengroup.com/about",
-  "https://adengroup.com/contact",
+  "https://adengroup.com/about-us/",
+  "https://adengroup.com/careers/",
+  "https://adengroup.com/cn/about-us/",
+  "https://adengroup.com/cn/careers/",
+  "https://adengroup.com/cn/contact/",
+  "https://adengroup.com/cn/",
+  "https://adengroup.com/cn/media/",
+  "https://adengroup.com/contact/",
+  "https://adengroup.com/media/",
 ];
 
 // Maximum retry attempts for navigation
