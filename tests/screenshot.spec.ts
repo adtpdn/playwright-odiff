@@ -14,11 +14,18 @@ const urls = [
 
 // Utility functions
 function createFileNameFromUrl(url: string): string {
-  return url
-    .replace(/^https?:\/\//, "")
-    .replace(/\/$/, "")
-    .replace(/[^a-zA-Z0-9]/g, "-")
-    .toLowerCase();
+  // Remove protocol and www
+  const urlObj = new URL(url);
+  const domain = urlObj.hostname.replace("www.", "");
+  const path = urlObj.pathname.replace(/^\/|\/$/g, "");
+
+  // Convert domain to single string
+  const domainSlug = domain.replace(/\./g, "");
+
+  // Get page name (use 'home' for root path)
+  const pageName = path || "home";
+
+  return [domainSlug, pageName];
 }
 
 function setupDirectories() {
@@ -43,27 +50,16 @@ test("Screenshot comparison across devices and browsers", async ({
   page,
   browserName,
 }) => {
-  // Skip if browser isn't in our config
-  if (!browsers.includes(browserName as (typeof browsers)[number])) {
-    test.skip();
-    return;
-  }
-
-  // Determine which device configurations to test based on browser
-  const deviceConfigs = Object.entries(devices).filter(([deviceType]) => {
-    if (browserName === "chromium") {
-      return deviceType === "desktop"; // Chromium only tests desktop
-    }
-    return true; // Other browsers test all devices
-  });
+  // Test all device configs for all browsers
+  const deviceConfigs = Object.entries(devices);
 
   for (const url of urls) {
     for (const [deviceType, viewport] of deviceConfigs) {
       // Set viewport
       await page.setViewportSize(viewport);
 
-      const urlSlug = createFileNameFromUrl(url);
-      const fileName = `${urlSlug}-${browserName}-${deviceType}-${viewport.width}x${viewport.height}.png`;
+      const [domainSlug, pageName] = createFileNameFromUrl(url);
+      const fileName = `${domainSlug}-${pageName}-${browserName}-${deviceType}-${viewport.width}x${viewport.height}.png`;
 
       // Navigate and wait for network idle
       await page.goto(url, {
@@ -94,7 +90,7 @@ test("Screenshot comparison across devices and browsers", async ({
             diffPath
           );
           console.log(
-            `${imagesAreSame ? "✅" : "❌"} ${fileName}: ${
+            `${imagesAreSame ? "⛓️" : "🚧"} ${fileName}: ${
               imagesAreSame ? "Match" : "Differ"
             }`
           );

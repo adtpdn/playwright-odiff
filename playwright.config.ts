@@ -20,35 +20,71 @@ const config: PlaywrightTestConfig = {
   },
   projects: [
     // Desktop Projects
-    ...browsers.map((browser) => ({
-      name: `Desktop ${browser}`,
+    {
+      name: "Desktop Chrome",
       use: {
-        browserName: browser,
+        browserName: "chromium",
         viewport: devices.desktop,
       },
-    })),
-
-    // Tablet Projects (excluding Chromium as per original config)
-    ...browsers
-      .filter((b) => b !== "chromium")
-      .map((browser) => ({
-        name: `Tablet ${browser}`,
-        use: {
-          browserName: browser,
-          viewport: devices.tablet,
-        },
-      })),
-
-    // Mobile Projects (excluding Chromium as per original config)
-    ...browsers
-      .filter((b) => b !== "chromium")
-      .map((browser) => ({
-        name: `Mobile ${browser}`,
-        use: {
-          browserName: browser,
-          viewport: devices.mobile,
-        },
-      })),
+    },
+    {
+      name: "Desktop Firefox",
+      use: {
+        browserName: "firefox",
+        viewport: devices.desktop,
+      },
+    },
+    {
+      name: "Desktop Safari",
+      use: {
+        browserName: "webkit",
+        viewport: devices.desktop,
+      },
+    },
+    // Tablet Projects
+    {
+      name: "Tablet Chrome",
+      use: {
+        browserName: "chromium",
+        viewport: devices.tablet,
+      },
+    },
+    {
+      name: "Tablet Firefox",
+      use: {
+        browserName: "firefox",
+        viewport: devices.tablet,
+      },
+    },
+    {
+      name: "Tablet Safari",
+      use: {
+        browserName: "webkit",
+        viewport: devices.tablet,
+      },
+    },
+    // Mobile Projects
+    {
+      name: "Mobile Chrome",
+      use: {
+        browserName: "chromium",
+        viewport: devices.mobile,
+      },
+    },
+    {
+      name: "Mobile Firefox",
+      use: {
+        browserName: "firefox",
+        viewport: devices.mobile,
+      },
+    },
+    {
+      name: "Mobile Safari",
+      use: {
+        browserName: "webkit",
+        viewport: devices.mobile,
+      },
+    },
   ],
 };
 

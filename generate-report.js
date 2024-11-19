@@ -3,6 +3,8 @@ const fs = require("fs");
 const path = require("path");
 
 function generateReport() {
+  console.log('Starting report generation...');
+  
   const screenshotsDir = path.join(process.cwd(), "screenshots");
   const publicDir = path.join(process.cwd(), "public");
 
@@ -17,6 +19,8 @@ function generateReport() {
     .sort()
     .reverse();
 
+  console.log('Found timestamp directories:', timestamps);
+
   if (timestamps.length === 0) {
     console.log("No screenshots found to generate report");
     return;
@@ -28,15 +32,31 @@ function generateReport() {
 
   // Parse screenshot metadata
   function parseScreenshotName(filename) {
-    const [url, browser, device, resolution] = filename
-      .replace(".png", "")
-      .split("-");
+    // Remove .png extension and split by dashes
+    const parts = filename.replace('.png', '').split('-');
+    
+    // Get viewport dimensions (last element)
+    const resolution = parts.pop();
+    // Get device type (second to last)
+    const device = parts.pop();
+    // Get browser name (third to last)
+    const browser = parts.pop();
+    // Get page name (fourth to last)
+    const page = parts.pop();
+    // Remaining parts form the domain
+    const domain = parts.join('-');
+
+    // Reconstruct URL for display
+    const displayUrl = page === 'home' 
+      ? `${domain}.com` 
+      : `${domain}.com/${page}`;
+
     return {
-      url,
+      url: displayUrl,
       browser,
       device,
       resolution,
-      fullName: filename,
+      fullName: filename
     };
   }
 
@@ -44,6 +64,9 @@ function generateReport() {
   const screenshots = fs
     .readdirSync(currentDir)
     .filter((f) => !f.startsWith("diff-"));
+    
+  console.log('Processing screenshots:', screenshots);
+
   const groupedByUrl = {};
 
   screenshots.forEach((screenshot) => {
@@ -152,8 +175,8 @@ function generateReport() {
 
       <script>
           function toggleCollapse(index) {
-              const content = document.getElementById(\`collapse-\${index}\`);
-              const arrow = document.getElementById(\`arrow-\${index}\`);
+              const content = document.getElementById(`collapse-${index}`);
+              const arrow = document.getElementById(`arrow-${index}`);
               
               if (content.classList.contains('hidden')) {
                   content.classList.remove('hidden');
