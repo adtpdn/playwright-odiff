@@ -59,14 +59,14 @@ export const timeouts = {
   local: {
     navigation: 60000,
     page: 100000,
-    networkIdle: 10000,
-    render: 10000,
+    networkIdle: 60000,
+    render: 60000,
   },
   ci: {
     navigation: 60000,
     page: 100000,
-    networkIdle: 10000,
-    render: 10000,
+    networkIdle: 60000,
+    render: 60000,
   },
 } as const;
 

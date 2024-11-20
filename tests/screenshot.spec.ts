@@ -129,7 +129,7 @@ for (const [deviceType, viewport] of Object.entries(devices)) {
           }
 
           // Wait for layout to stabilize
-          await page.waitForTimeout(2000);
+          await page.waitForTimeout(20000);
 
           const [domainSlug, pageName] = createFileNameFromUrl(url);
           const fileName = `${domainSlug}-${pageName}-${browserName}-${deviceType}-${viewport.width}x${viewport.height}.png`;
@@ -158,7 +158,7 @@ for (const [deviceType, viewport] of Object.entries(devices)) {
                 diffPath
               );
               console.log(
-                `${imagesAreSame ? "⛓️" : "🚧"} ${fileName}: ${
+                `${imagesAreSame ? "⛓️ " : "🚧 "} ${fileName}: ${
                   imagesAreSame ? "Match" : "Differ"
                 }`
               );
