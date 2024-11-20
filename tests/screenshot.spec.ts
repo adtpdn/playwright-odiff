@@ -65,29 +65,38 @@ function setupDirectories() {
 
 async function navigateWithRetry(page, url, retryCount = 0) {
   try {
-    await page.goto(url, {
-      waitUntil: "domcontentloaded",
-      timeout: NAVIGATION_TIMEOUT,
-      ignoreHTTPSErrors: true,
-    });
-
-    try {
-      await page.waitForLoadState("load", { timeout: PAGE_TIMEOUT });
-    } catch (error) {
-      console.log(`Load state timeout for ${url}, continuing anyway`);
-    }
-
-    try {
-      await page.waitForLoadState("networkidle", {
-        timeout: NETWORK_IDLE_TIMEOUT,
+    if (!page.isClosed()) {
+      await page.goto(url, {
+        waitUntil: "domcontentloaded",
+        timeout: NAVIGATION_TIMEOUT,
+        ignoreHTTPSErrors: true,
       });
-    } catch (error) {
-      console.log(`Network not completely idle for ${url}, continuing anyway`);
-    }
 
-    return true;
+      if (!page.isClosed()) {
+        try {
+          await page.waitForLoadState("load", { timeout: PAGE_TIMEOUT });
+        } catch (error) {
+          console.log(`Load state timeout for ${url}, continuing anyway`);
+        }
+
+        if (!page.isClosed()) {
+          try {
+            await page.waitForLoadState("networkidle", {
+              timeout: NETWORK_IDLE_TIMEOUT,
+            });
+          } catch (error) {
+            console.log(
+              `Network not completely idle for ${url}, continuing anyway`
+            );
+          }
+        }
+      }
+
+      return true;
+    }
+    return false;
   } catch (error) {
-    if (retryCount < MAX_RETRIES) {
+    if (retryCount < MAX_RETRIES && !page.isClosed()) {
       console.log(
         `Retrying navigation to ${url} (attempt ${
           retryCount + 1
@@ -106,17 +115,21 @@ const { currentDir, baselineDir } = setupDirectories();
 for (const [deviceType, viewport] of Object.entries(devices)) {
   test(`Screenshot comparison for ${deviceType}`, async ({ browser }) => {
     const browserName = browser.browserType().name();
-    const context = await browser.newContext({
-      viewport,
-      deviceScaleFactor: deviceType === "desktop" ? 1 : 2,
-    });
+    let context;
 
     try {
+      context = await browser.newContext({
+        viewport,
+        deviceScaleFactor: deviceType === "desktop" ? 1 : 2,
+      });
+
       for (const url of urls) {
         console.log(`Testing URL: ${url} on ${deviceType}`);
-        const page = await context.newPage();
+        let page;
 
         try {
+          page = await context.newPage();
+
           // Set timeouts
           page.setDefaultNavigationTimeout(NAVIGATION_TIMEOUT);
           page.setDefaultTimeout(PAGE_TIMEOUT);
@@ -128,58 +141,88 @@ for (const [deviceType, viewport] of Object.entries(devices)) {
             continue;
           }
 
-          // Wait for layout to stabilize
-          await page.waitForTimeout(20000);
-
-          const [domainSlug, pageName] = createFileNameFromUrl(url);
-          const fileName = `${domainSlug}-${pageName}-${browserName}-${deviceType}-${viewport.width}x${viewport.height}.png`;
-
-          // Take screenshot
-          const currentPath = path.join(currentDir, browserName, fileName);
-          await page.screenshot({
-            path: currentPath,
-            fullPage: true,
-            timeout: PAGE_TIMEOUT,
-          });
-
-          // Compare with baseline
-          const baselinePath = path.join(baselineDir, browserName, fileName);
-
-          if (fs.existsSync(baselinePath)) {
-            const diffPath = path.join(
-              currentDir,
-              browserName,
-              `diff-${fileName}`
-            );
+          if (!page.isClosed()) {
+            // Wait for layout to stabilize with a check for page closure
             try {
-              const { imagesAreSame } = await compareScreenshots(
-                baselinePath,
-                currentPath,
-                diffPath
-              );
-              console.log(
-                `${imagesAreSame ? "⛓️ " : "🚧 "} ${fileName}: ${
-                  imagesAreSame ? "Match" : "Differ"
-                }`
-              );
+              await Promise.race([
+                page.waitForTimeout(20000),
+                new Promise((_, reject) => {
+                  const checkInterval = setInterval(() => {
+                    if (page.isClosed()) {
+                      clearInterval(checkInterval);
+                      reject(new Error("Page was closed during wait"));
+                    }
+                  }, 1000);
+                  setTimeout(() => clearInterval(checkInterval), 20000);
+                }),
+              ]);
             } catch (error) {
-              console.error(
-                `Error comparing screenshots for ${fileName}:`,
-                error
-              );
+              if (error.message === "Page was closed during wait") {
+                continue;
+              }
+              throw error;
             }
-          } else {
-            fs.copyFileSync(currentPath, baselinePath);
-            console.log(`📸 Created baseline for ${fileName}`);
+
+            const [domainSlug, pageName] = createFileNameFromUrl(url);
+            const fileName = `${domainSlug}-${pageName}-${browserName}-${deviceType}-${viewport.width}x${viewport.height}.png`;
+
+            // Take screenshot
+            if (!page.isClosed()) {
+              const currentPath = path.join(currentDir, browserName, fileName);
+              await page.screenshot({
+                path: currentPath,
+                fullPage: true,
+                timeout: PAGE_TIMEOUT,
+              });
+
+              // Compare with baseline
+              const baselinePath = path.join(
+                baselineDir,
+                browserName,
+                fileName
+              );
+
+              if (fs.existsSync(baselinePath)) {
+                const diffPath = path.join(
+                  currentDir,
+                  browserName,
+                  `diff-${fileName}`
+                );
+                try {
+                  const { imagesAreSame } = await compareScreenshots(
+                    baselinePath,
+                    currentPath,
+                    diffPath
+                  );
+                  console.log(
+                    `${imagesAreSame ? "⛓️ " : "🚧 "} ${fileName}: ${
+                      imagesAreSame ? "Match" : "Differ"
+                    }`
+                  );
+                } catch (error) {
+                  console.error(
+                    `Error comparing screenshots for ${fileName}:`,
+                    error
+                  );
+                }
+              } else {
+                fs.copyFileSync(currentPath, baselinePath);
+                console.log(`📸 Created baseline for ${fileName}`);
+              }
+            }
           }
         } catch (error) {
           console.error(`Error processing ${url} for ${deviceType}:`, error);
         } finally {
-          await page.close().catch(() => {}); // Safely close the page
+          if (page && !page.isClosed()) {
+            await page.close().catch(() => {});
+          }
         }
       }
     } finally {
-      await context.close().catch(() => {}); // Safely close the context
+      if (context) {
+        await context.close().catch(() => {});
+      }
     }
   });
 }
