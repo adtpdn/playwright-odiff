@@ -4,7 +4,7 @@ import { devices, browsers, timeouts, browserConfigs } from "./config/devices";
 
 const config: PlaywrightTestConfig = {
   testDir: "./tests",
-  timeout: timeouts.ci.navigation,
+  timeout: 120000, // 2 minutes per test
   globalTimeout: 1800000, // 30 minutes total
   outputDir: "./test-results/ci",
   workers: 1, // Limited for CI

@@ -7,20 +7,19 @@ const config: PlaywrightTestConfig = {
   timeout: 180000, // 3 minutes per test
   globalTimeout: 7200000, // 2 hours total
   outputDir: "./test-results/local",
-  workers: 3, // Reduce from default to improve stability
+  workers: 3, // Optimal for local testing
   use: {
     ignoreHTTPSErrors: true,
     screenshot: "only-on-failure",
     trace: "retain-on-failure",
     video: "retain-on-failure",
-    actionTimeout: 60000,
-    navigationTimeout: 120000,
-    viewport: devices.desktop, // Default viewport
+    actionTimeout: timeouts.local.page,
+    navigationTimeout: timeouts.local.navigation,
   },
   expect: {
-    timeout: 30000,
+    timeout: timeouts.local.page,
   },
-  retries: 2, // Increase retries
+  retries: 1,
   reporter: [["html", { outputFolder: "playwright-report/local" }], ["list"]],
   preserveOutput: "failures-only",
   projects: [
