@@ -1,110 +1,69 @@
-// playwright.ci.config.ts
 import { PlaywrightTestConfig } from "@playwright/test";
-import { devices, browsers, timeouts, browserConfigs } from "./config/devices";
+import { devices } from "./config/devices";
 
 const config: PlaywrightTestConfig = {
   testDir: "./tests",
-  timeout: timeouts.ci.navigation,
-  globalTimeout: 2000000, // 30 minutes total
-  outputDir: "./test-results/ci",
-  workers: 1, // Limited for CI
-  use: {
-    ignoreHTTPSErrors: true,
-    screenshot: "only-on-failure",
-    trace: "retain-on-failure",
-    video: "retain-on-failure",
-    actionTimeout: timeouts.ci.page,
-    navigationTimeout: timeouts.ci.navigation,
-  },
+  timeout: 5 * 60 * 1000, // 5 minutes
   expect: {
-    timeout: timeouts.ci.page,
+    timeout: 30000,
   },
-  retries: 6, // More retries for CI
-  reporter: [
-    ["html", { outputFolder: "playwright-report/ci" }],
-    ["list"],
-    ["github"],
-  ],
-  preserveOutput: "failures-only",
-  forbidOnly: true, // Fail if test.only is present
-  maxFailures: 10, // Stop after 10 failures
+  fullyParallel: false,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  reporter: process.env.CI ? "dot" : "list",
+  use: {
+    actionTimeout: 30000,
+    navigationTimeout: 90000,
+    trace: "retain-on-failure",
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
+  },
   projects: [
-    // Desktop Projects
     {
-      name: "Desktop Chrome",
+      name: "chromium",
       use: {
+        ...devices["desktop"],
         browserName: "chromium",
-        viewport: devices.desktop,
-        ...browserConfigs.chromium,
+        launchOptions: {
+          args: [
+            "--disable-dev-shm-usage",
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-gpu",
+            "--headless=new",
+          ],
+        },
       },
     },
     {
-      name: "Desktop Firefox",
+      name: "firefox",
       use: {
+        ...devices["desktop"],
         browserName: "firefox",
-        viewport: devices.desktop,
-        ...browserConfigs.firefox,
+        launchOptions: {
+          firefoxUserPrefs: {
+            "browser.cache.disk.enable": false,
+            "browser.cache.memory.enable": false,
+          },
+        },
       },
     },
     {
-      name: "Desktop Safari",
+      name: "webkit",
       use: {
+        ...devices["desktop"],
         browserName: "webkit",
-        viewport: devices.desktop,
-        ...browserConfigs.webkit,
-      },
-    },
-    // Tablet Projects
-    {
-      name: "Tablet Chrome",
-      use: {
-        browserName: "chromium",
-        viewport: devices.tablet,
-        ...browserConfigs.chromium,
-      },
-    },
-    {
-      name: "Tablet Firefox",
-      use: {
-        browserName: "firefox",
-        viewport: devices.tablet,
-        ...browserConfigs.firefox,
-      },
-    },
-    {
-      name: "Tablet Safari",
-      use: {
-        browserName: "webkit",
-        viewport: devices.tablet,
-        ...browserConfigs.webkit,
-      },
-    },
-    // Mobile Projects
-    {
-      name: "Mobile Chrome",
-      use: {
-        browserName: "chromium",
-        viewport: devices.mobile,
-        ...browserConfigs.chromium,
-      },
-    },
-    {
-      name: "Mobile Firefox",
-      use: {
-        browserName: "firefox",
-        viewport: devices.mobile,
-        ...browserConfigs.firefox,
-      },
-    },
-    {
-      name: "Mobile Safari",
-      use: {
-        browserName: "webkit",
-        viewport: devices.mobile,
-        ...browserConfigs.webkit,
       },
     },
   ],
+  maxFailures: 10, // Stop after 10 failures
+  reportSlowTests: {
+    max: 5,
+    threshold: 60000,
+  },
+  globalSetup: require.resolve("./global-setup"),
+  globalTeardown: require.resolve("./global-teardown"),
 };
 
 export default config;

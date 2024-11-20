@@ -8,11 +8,20 @@ if (!groupName || !urlGroups[groupName]) {
   process.exit(1);
 }
 
+// Set environment variables
 process.env.TEST_ENV = "ci";
 process.env.TEST_URLS = JSON.stringify(urlGroups[groupName]);
 process.env.NODE_OPTIONS = "--max-old-space-size=4096";
 
 try {
+  // Install browsers first
+  console.log("Installing Playwright browsers...");
+  execSync("npx playwright install --with-deps", {
+    stdio: "inherit",
+  });
+
+  // Run the tests
+  console.log("Running tests...");
   execSync("npx playwright test --config=playwright.ci.config.ts --workers=1", {
     stdio: "inherit",
     env: {
