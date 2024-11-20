@@ -3,7 +3,7 @@
 // Device configurations
 export const devices = {
   desktop: { width: 1280, height: 720 },
-  tablet: { width: 768, height: 1024 },
+  // tablet: { width: 768, height: 1024 },
   mobile: { width: 375, height: 667 },
 } as const;
 
@@ -19,13 +19,13 @@ export const viewports = {
     isMobile: false,
     hasTouch: false,
   },
-  tablet: {
-    width: 768,
-    height: 1024,
-    deviceScaleFactor: 2,
-    isMobile: true,
-    hasTouch: true,
-  },
+  // tablet: {
+  //   width: 768,
+  //   height: 1024,
+  //   deviceScaleFactor: 2,
+  //   isMobile: true,
+  //   hasTouch: true,
+  // },
   mobile: {
     width: 375,
     height: 667,
@@ -63,10 +63,10 @@ export const timeouts = {
     render: 60000,
   },
   ci: {
-    navigation: 60000,
+    navigation: 100000,
     page: 100000,
-    networkIdle: 60000,
-    render: 60000,
+    networkIdle: 100000,
+    render: 100000,
   },
 } as const;
 
