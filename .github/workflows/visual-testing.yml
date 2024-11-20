@@ -53,7 +53,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run tests for ${{ matrix.url_group }}
-        run: node run-tests.js ${{ matrix.url_group }}
+        run: node run-tests-ci.js ${{ matrix.url_group }}
 
       - name: Generate report
         run: node generate-report.js
