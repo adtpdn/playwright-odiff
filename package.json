@@ -2,16 +2,25 @@
   "name": "playwright-odiff",
   "version": "1.0.0",
   "scripts": {
-    "test:local": "bash test-local.sh",
+    "test:local": "node run-tests-local.js",
+    "test:local:all": "node run-tests-local.js all",
+    "test:local:adenenergies": "node run-tests-local.js adenenergies-main",
+    "test:local:adenenergies-zh": "node run-tests-local.js adenenergies-zh",
+    "test:local:adengroup": "node run-tests-local.js adengroup-main",
+    "test:local:adengroup-cn": "node run-tests-local.js adengroup-cn",
+    "test:local:report": "node generate-report-local.js",
+    "test:ci": "node run-tests-ci.js",
+    "test:ci:report": "node generate-report-ci.js",
     "test:clean": "rm -rf screenshots/* && rm -rf public/* && rm -rf test-results/* && rm -rf playwright-report/*",
+    "test:clean:local": "rm -rf screenshots/local/* && rm -rf public/local/* && rm -rf test-results/local/*",
+    "test:clean:ci": "rm -rf screenshots/ci/* && rm -rf public/ci/* && rm -rf test-results/ci/*",
     "test:update-baseline": "playwright test --update-snapshots",
-    "test:report": "node generate-report.js",
-
-    "test:ci": "playwright test",
+    "test:update-baseline:local": "playwright test --config=playwright.local.config.ts --update-snapshots",
+    "test:update-baseline:ci": "playwright test --config=playwright.ci.config.ts --update-snapshots",
     "test:install": "playwright install --with-deps",
-    "test:verify": "playwright --version && playwright browsers list",
-
+    "test:verify": "playwright --version && npx playwright list && npx playwright show-trace --version && npx playwright test --version",
     "clean": "rm -rf node_modules",
+    "clean:all": "npm run test:clean && npm run clean",
     "reinstall": "npm run clean && npm install"
   },
   "keywords": [],
@@ -24,6 +33,7 @@
   },
   "devDependencies": {
     "odiff-bin": "^3.1.2",
-    "playwright": "^1.48.2"
+    "playwright": "^1.48.2",
+    "typescript": "^5.0.0"
   }
 }

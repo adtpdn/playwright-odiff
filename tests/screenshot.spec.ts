@@ -2,50 +2,32 @@
 import { test } from "@playwright/test";
 import path from "path";
 import fs from "fs";
-import { devices, browsers } from "../playwright.config";
-import { generateReport } from "../generate-report";
+import {
+  devices,
+  browsers,
+  timeouts,
+  getTimeouts,
+  EnvironmentType,
+} from "../config/devices";
 import { compareScreenshots } from "../utils/compare-screenshots";
+const urlGroups = require("../url-groups");
 
-// Configuration
-const urls = [
-  "https://adenenergies.com/",
-  "https://adenenergies.com/about/",
-  "https://adenenergies.com/contact/",
-  "https://adenenergies.com/media/",
-  "https://adenenergies.com/media/insights/",
-  "https://adenenergies.com/media/news/",
-  "https://adenenergies.com/media/videos/",
-  "https://adenenergies.com/solutions/",
-  "https://adenenergies.com/zh/",
-  "https://adenenergies.com/zh/about/",
-  "https://adenenergies.com/zh/contact/",
-  "https://adenenergies.com/zh/media/",
-  "https://adenenergies.com/zh/media/insights/",
-  "https://adenenergies.com/zh/media/news/",
-  "https://adenenergies.com/zh/media/videos/",
-  "https://adenenergies.com/zh/solutions/",
-  "https://adengroup.com/",
-  "https://adengroup.com/about-us/",
-  "https://adengroup.com/careers/",
-  "https://adengroup.com/contact/",
-  "https://adengroup.com/media/",
-  "https://adengroup.com/cn/",
-  "https://adengroup.com/cn/about-us/",
-  "https://adengroup.com/cn/careers/",
-  "https://adengroup.com/cn/contact/",
-  "https://adengroup.com/cn/media/",
-];
+const env: EnvironmentType = process.env.TEST_ENV === "ci" ? "ci" : "local";
+const envTimeouts = getTimeouts(env);
 
 // Constants
-const MAX_RETRIES = 3;
-const NAVIGATION_TIMEOUT = 60000; // Reduced from 100000
-const PAGE_TIMEOUT = 30000;
-const NETWORK_IDLE_TIMEOUT = 10000;
-const RENDER_TIMEOUT = 10000;
-const CHUNK_SIZE = 5;
+const MAX_RETRIES = env === "ci" ? 2 : 3;
+const NAVIGATION_TIMEOUT = envTimeouts.navigation;
+const PAGE_TIMEOUT = envTimeouts.page;
+const NETWORK_IDLE_TIMEOUT = envTimeouts.networkIdle;
+const RENDER_TIMEOUT = envTimeouts.render;
 
-// Utility functions
-function createFileNameFromUrl(url: string): string {
+// Get URLs from environment variable or use default group
+const urls = process.env.TEST_URLS
+  ? JSON.parse(process.env.TEST_URLS)
+  : urlGroups["adenenergies-main"];
+
+function createFileNameFromUrl(url: string): string[] {
   const urlObj = new URL(url);
   const domain = urlObj.hostname.replace("www.", "");
   const path = urlObj.pathname.replace(/^\/|\/$/g, "");
@@ -89,14 +71,12 @@ async function navigateWithRetry(page, url, retryCount = 0) {
       ignoreHTTPSErrors: true,
     });
 
-    // Wait for load state with timeout
     try {
       await page.waitForLoadState("load", { timeout: PAGE_TIMEOUT });
     } catch (error) {
       console.log(`Load state timeout for ${url}, continuing anyway`);
     }
 
-    // Wait for network idle with shorter timeout
     try {
       await page.waitForLoadState("networkidle", {
         timeout: NETWORK_IDLE_TIMEOUT,
@@ -104,6 +84,8 @@ async function navigateWithRetry(page, url, retryCount = 0) {
     } catch (error) {
       console.log(`Network not completely idle for ${url}, continuing anyway`);
     }
+
+    return true;
   } catch (error) {
     if (retryCount < MAX_RETRIES) {
       console.log(
@@ -120,94 +102,95 @@ async function navigateWithRetry(page, url, retryCount = 0) {
 
 const { currentDir, baselineDir } = setupDirectories();
 
-// Test cases
-test("Screenshot comparison across devices and browsers", async ({
-  browser,
-}) => {
-  // Process URLs in chunks
-  const urlChunks = [];
-  for (let i = 0; i < urls.length; i += CHUNK_SIZE) {
-    urlChunks.push(urls.slice(i, i + CHUNK_SIZE));
-  }
-
-  const deviceConfigs = Object.entries(devices);
-  const browserName = browser.browserType().name();
-
-  for (const urlChunk of urlChunks) {
-    // Create new context for each chunk
-    const context = await browser.newContext();
-    const page = await context.newPage();
+// Create a test for each device type
+for (const [deviceType, viewport] of Object.entries(devices)) {
+  test(`Screenshot comparison for ${deviceType}`, async ({ browser }) => {
+    const browserName = browser.browserType().name();
+    const context = await browser.newContext({
+      viewport,
+      deviceScaleFactor: deviceType === "desktop" ? 1 : 2,
+    });
 
     try {
-      // Set timeouts
-      page.setDefaultNavigationTimeout(NAVIGATION_TIMEOUT);
-      page.setDefaultTimeout(PAGE_TIMEOUT);
+      for (const url of urls) {
+        console.log(`Testing URL: ${url} on ${deviceType}`);
+        const page = await context.newPage();
 
-      for (const url of urlChunk) {
-        for (const [deviceType, viewport] of deviceConfigs) {
-          try {
-            await page.setViewportSize(viewport);
+        try {
+          // Set timeouts
+          page.setDefaultNavigationTimeout(NAVIGATION_TIMEOUT);
+          page.setDefaultTimeout(PAGE_TIMEOUT);
 
-            const [domainSlug, pageName] = createFileNameFromUrl(url);
-            const fileName = `${domainSlug}-${pageName}-${browserName}-${deviceType}-${viewport.width}x${viewport.height}.png`;
-
-            await navigateWithRetry(page, url);
-
-            // Wait for final renders with reasonable timeout
-            await page.waitForTimeout(RENDER_TIMEOUT);
-
-            // Take screenshot
-            const currentPath = path.join(currentDir, browserName, fileName);
-            await page.screenshot({
-              path: currentPath,
-              fullPage: true,
-              timeout: PAGE_TIMEOUT,
-            });
-
-            // Compare with baseline
-            const baselinePath = path.join(baselineDir, browserName, fileName);
-
-            if (fs.existsSync(baselinePath)) {
-              const diffPath = path.join(
-                currentDir,
-                browserName,
-                `diff-${fileName}`
-              );
-              try {
-                const { imagesAreSame } = await compareScreenshots(
-                  baselinePath,
-                  currentPath,
-                  diffPath
-                );
-                console.log(
-                  `${imagesAreSame ? "⛓️" : "🚧"} ${fileName}: ${
-                    imagesAreSame ? "Match" : "Differ"
-                  }`
-                );
-              } catch (error) {
-                console.error(
-                  `Error comparing screenshots for ${fileName}:`,
-                  error
-                );
-              }
-            } else {
-              fs.copyFileSync(currentPath, baselinePath);
-              console.log(`📸 Created baseline for ${fileName}`);
-            }
-          } catch (error) {
-            console.error(`Error processing ${url} for ${deviceType}:`, error);
+          // Navigate to URL
+          const navigationSuccess = await navigateWithRetry(page, url);
+          if (!navigationSuccess) {
+            console.log(`Skipping ${url} due to navigation failure`);
             continue;
           }
+
+          // Wait for layout to stabilize
+          await page.waitForTimeout(2000);
+
+          const [domainSlug, pageName] = createFileNameFromUrl(url);
+          const fileName = `${domainSlug}-${pageName}-${browserName}-${deviceType}-${viewport.width}x${viewport.height}.png`;
+
+          // Take screenshot
+          const currentPath = path.join(currentDir, browserName, fileName);
+          await page.screenshot({
+            path: currentPath,
+            fullPage: true,
+            timeout: PAGE_TIMEOUT,
+          });
+
+          // Compare with baseline
+          const baselinePath = path.join(baselineDir, browserName, fileName);
+
+          if (fs.existsSync(baselinePath)) {
+            const diffPath = path.join(
+              currentDir,
+              browserName,
+              `diff-${fileName}`
+            );
+            try {
+              const { imagesAreSame } = await compareScreenshots(
+                baselinePath,
+                currentPath,
+                diffPath
+              );
+              console.log(
+                `${imagesAreSame ? "⛓️" : "🚧"} ${fileName}: ${
+                  imagesAreSame ? "Match" : "Differ"
+                }`
+              );
+            } catch (error) {
+              console.error(
+                `Error comparing screenshots for ${fileName}:`,
+                error
+              );
+            }
+          } else {
+            fs.copyFileSync(currentPath, baselinePath);
+            console.log(`📸 Created baseline for ${fileName}`);
+          }
+        } catch (error) {
+          console.error(`Error processing ${url} for ${deviceType}:`, error);
+        } finally {
+          await page.close().catch(() => {}); // Safely close the page
         }
       }
     } finally {
-      // Clean up context after each chunk
-      await context.close();
+      await context.close().catch(() => {}); // Safely close the context
     }
-  }
-});
+  });
+}
 
 test.afterAll(async () => {
-  await generateReport();
-  console.log("📊 Visual regression report generated");
+  try {
+    const ReportGenerator = require("../generate-report").ReportGenerator;
+    const reportGenerator = new ReportGenerator();
+    reportGenerator.generate();
+    console.log("📊 Visual regression report generated");
+  } catch (error) {
+    console.error("Error generating report:", error);
+  }
 });

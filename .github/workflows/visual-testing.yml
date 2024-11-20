@@ -1,14 +1,42 @@
+# .github/workflows/visual-testing.yml
 name: Visual Testing
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
+    inputs:
+      url_group:
+        description: "URL group to test"
+        required: true
+        type: choice
+        options:
+          - "adenenergies-main"
+          - "adenenergies-zh"
+          - "adengroup-main"
+          - "adengroup-cn"
+  schedule:
+    - cron: "0 0 * * *" # Run daily at midnight
 
 jobs:
-  test:
+  prepare:
     runs-on: ubuntu-latest
+    outputs:
+      url_groups: ${{ steps.set-groups.outputs.groups }}
+    steps:
+      - id: set-groups
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "groups=['${{ github.event.inputs.url_group }}']" >> $GITHUB_OUTPUT
+          else
+            echo "groups=['adenenergies-main','adenenergies-zh','adengroup-main','adengroup-cn']" >> $GITHUB_OUTPUT
+          fi
+
+  test:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        url_group: ${{fromJson(needs.prepare.outputs.url_groups)}}
 
     steps:
       - uses: actions/checkout@v2
@@ -24,11 +52,31 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run tests
-        run: npx playwright test
+      - name: Run tests for ${{ matrix.url_group }}
+        run: node run-tests.js ${{ matrix.url_group }}
 
       - name: Generate report
         run: node generate-report.js
+
+      - name: Upload screenshots artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: screenshots-${{ matrix.url_group }}
+          path: screenshots
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+
+      - name: Merge reports
+        run: node merge-reports.js
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
