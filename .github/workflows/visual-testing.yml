@@ -59,7 +59,7 @@ jobs:
         run: node generate-report.js
 
       - name: Upload screenshots artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: screenshots-${{ matrix.url_group }}
           path: screenshots
@@ -71,7 +71,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           path: artifacts
 
