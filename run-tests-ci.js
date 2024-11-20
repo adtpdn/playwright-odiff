@@ -10,14 +10,17 @@ if (!groupName || !urlGroups[groupName]) {
 
 process.env.TEST_ENV = "ci";
 process.env.TEST_URLS = JSON.stringify(urlGroups[groupName]);
+process.env.NODE_OPTIONS = "--max-old-space-size=4096";
 
 try {
-  execSync("npx playwright test --config=playwright.ci.config.ts", {
+  execSync("npx playwright test --config=playwright.ci.config.ts --workers=1", {
     stdio: "inherit",
     env: {
       ...process.env,
+      PLAYWRIGHT_BROWSERS_PATH: "0",
       TEST_URLS: JSON.stringify(urlGroups[groupName]),
     },
+    timeout: 30 * 60 * 1000, // 30 minutes
   });
 } catch (error) {
   console.error(`Error running CI tests: ${error.message}`);

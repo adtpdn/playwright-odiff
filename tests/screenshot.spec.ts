@@ -27,6 +27,17 @@ const urls = process.env.TEST_URLS
   ? JSON.parse(process.env.TEST_URLS)
   : urlGroups["adenenergies-main"];
 
+const CONTEXT_OPTIONS = {
+  viewport: null, // Will be set per device
+  bypassCSP: true,
+  ignoreHTTPSErrors: true,
+  serviceWorkers: "block",
+  extraHTTPHeaders: {
+    "Accept-Language": "en-US,en;q=0.9",
+  },
+  userAgent: "playwright-testing",
+};
+
 function createFileNameFromUrl(url: string): string[] {
   const urlObj = new URL(url);
   const domain = urlObj.hostname.replace("www.", "");
@@ -116,113 +127,102 @@ for (const [deviceType, viewport] of Object.entries(devices)) {
   test(`Screenshot comparison for ${deviceType}`, async ({ browser }) => {
     const browserName = browser.browserType().name();
     let context;
+    let page;
 
     try {
+      // Create context with merged options
       context = await browser.newContext({
+        ...CONTEXT_OPTIONS,
         viewport,
         deviceScaleFactor: deviceType === "desktop" ? 1 : 2,
+        userAgent: `playwright-testing-${deviceType}`,
       });
+
+      // Pre-create page to avoid context switching issues
+      page = await context.newPage();
+      await page.setDefaultNavigationTimeout(NAVIGATION_TIMEOUT);
+      await page.setDefaultTimeout(PAGE_TIMEOUT);
 
       for (const url of urls) {
         console.log(`Testing URL: ${url} on ${deviceType}`);
-        let page;
 
         try {
-          page = await context.newPage();
+          // Clear memory and cache between URLs
+          await page.evaluate(() => {
+            window.performance?.memory &&
+              console.log("Memory:", window.performance.memory);
+            if (window.gc) window.gc();
+          });
 
-          // Set timeouts
-          page.setDefaultNavigationTimeout(NAVIGATION_TIMEOUT);
-          page.setDefaultTimeout(PAGE_TIMEOUT);
-
-          // Navigate to URL
           const navigationSuccess = await navigateWithRetry(page, url);
-          if (!navigationSuccess) {
-            console.log(`Skipping ${url} due to navigation failure`);
-            continue;
-          }
+          if (!navigationSuccess) continue;
+
+          // Wait for network and animations to settle
+          await Promise.race([
+            Promise.all([
+              page
+                .waitForLoadState("networkidle", {
+                  timeout: NETWORK_IDLE_TIMEOUT,
+                })
+                .catch(() => {}),
+              page
+                .waitForLoadState("domcontentloaded", { timeout: PAGE_TIMEOUT })
+                .catch(() => {}),
+            ]),
+            page.waitForTimeout(RENDER_TIMEOUT),
+          ]);
+
+          // Take and compare screenshots
+          const [domainSlug, pageName] = createFileNameFromUrl(url);
+          const fileName = `${domainSlug}-${pageName}-${browserName}-${deviceType}-${viewport.width}x${viewport.height}.png`;
 
           if (!page.isClosed()) {
-            // Wait for layout to stabilize with a check for page closure
-            try {
-              await Promise.race([
-                page.waitForTimeout(30000),
-                new Promise((_, reject) => {
-                  const checkInterval = setInterval(() => {
-                    if (page.isClosed()) {
-                      clearInterval(checkInterval);
-                      reject(new Error("Page was closed during wait"));
-                    }
-                  }, 1000);
-                  setTimeout(() => clearInterval(checkInterval), 30000);
-                }),
-              ]);
-            } catch (error) {
-              if (error.message === "Page was closed during wait") {
-                continue;
-              }
-              throw error;
-            }
+            const currentPath = path.join(currentDir, browserName, fileName);
+            await page.screenshot({
+              path: currentPath,
+              fullPage: true,
+              timeout: PAGE_TIMEOUT * 2,
+            });
 
-            const [domainSlug, pageName] = createFileNameFromUrl(url);
-            const fileName = `${domainSlug}-${pageName}-${browserName}-${deviceType}-${viewport.width}x${viewport.height}.png`;
+            // Compare with baseline
+            const baselinePath = path.join(baselineDir, browserName, fileName);
 
-            // Take screenshot
-            if (!page.isClosed()) {
-              const currentPath = path.join(currentDir, browserName, fileName);
-              await page.screenshot({
-                path: currentPath,
-                fullPage: true,
-                timeout: PAGE_TIMEOUT,
-              });
-
-              // Compare with baseline
-              const baselinePath = path.join(
-                baselineDir,
+            if (fs.existsSync(baselinePath)) {
+              const diffPath = path.join(
+                currentDir,
                 browserName,
-                fileName
+                `diff-${fileName}`
               );
-
-              if (fs.existsSync(baselinePath)) {
-                const diffPath = path.join(
-                  currentDir,
-                  browserName,
-                  `diff-${fileName}`
+              try {
+                const { imagesAreSame } = await compareScreenshots(
+                  baselinePath,
+                  currentPath,
+                  diffPath
                 );
-                try {
-                  const { imagesAreSame } = await compareScreenshots(
-                    baselinePath,
-                    currentPath,
-                    diffPath
-                  );
-                  console.log(
-                    `${imagesAreSame ? "⛓️ " : "🚧 "} ${fileName}: ${
-                      imagesAreSame ? "Match" : "Differ"
-                    }`
-                  );
-                } catch (error) {
-                  console.error(
-                    `Error comparing screenshots for ${fileName}:`,
-                    error
-                  );
-                }
-              } else {
-                fs.copyFileSync(currentPath, baselinePath);
-                console.log(`📸 Created baseline for ${fileName}`);
+                console.log(
+                  `${imagesAreSame ? "⛓️ " : "🚧 "} ${fileName}: ${
+                    imagesAreSame ? "Match" : "Differ"
+                  }`
+                );
+              } catch (error) {
+                console.error(
+                  `Error comparing screenshots for ${fileName}:`,
+                  error
+                );
               }
+            } else {
+              fs.copyFileSync(currentPath, baselinePath);
+              console.log(`📸 Created baseline for ${fileName}`);
             }
           }
         } catch (error) {
           console.error(`Error processing ${url} for ${deviceType}:`, error);
-        } finally {
-          if (page && !page.isClosed()) {
-            await page.close().catch(() => {});
-          }
+          // Don't exit, continue with next URL
         }
       }
     } finally {
-      if (context) {
-        await context.close().catch(() => {});
-      }
+      if (page && !page.isClosed()) await page.close().catch(() => {});
+      if (context) await context.close().catch(() => {});
     }
   });
 }
