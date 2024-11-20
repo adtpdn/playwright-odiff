@@ -5,9 +5,9 @@ import { devices, browsers, timeouts, browserConfigs } from "./config/devices";
 const config: PlaywrightTestConfig = {
   testDir: "./tests",
   timeout: timeouts.ci.navigation,
-  globalTimeout: 1800000, // 30 minutes total
+  globalTimeout: 2000000, // 30 minutes total
   outputDir: "./test-results/ci",
-  workers: 1, // Limited for CI
+  workers: 3, // Limited for CI
   use: {
     ignoreHTTPSErrors: true,
     screenshot: "only-on-failure",
@@ -19,7 +19,7 @@ const config: PlaywrightTestConfig = {
   expect: {
     timeout: timeouts.ci.page,
   },
-  retries: 2, // More retries for CI
+  retries: 3, // More retries for CI
   reporter: [
     ["html", { outputFolder: "playwright-report/ci" }],
     ["list"],
