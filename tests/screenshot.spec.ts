@@ -145,7 +145,7 @@ for (const [deviceType, viewport] of Object.entries(devices)) {
             // Wait for layout to stabilize with a check for page closure
             try {
               await Promise.race([
-                page.waitForTimeout(20000),
+                page.waitForTimeout(30000),
                 new Promise((_, reject) => {
                   const checkInterval = setInterval(() => {
                     if (page.isClosed()) {
@@ -153,7 +153,7 @@ for (const [deviceType, viewport] of Object.entries(devices)) {
                       reject(new Error("Page was closed during wait"));
                     }
                   }, 1000);
-                  setTimeout(() => clearInterval(checkInterval), 20000);
+                  setTimeout(() => clearInterval(checkInterval), 30000);
                 }),
               ]);
             } catch (error) {

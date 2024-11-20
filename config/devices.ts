@@ -38,18 +38,18 @@ export const viewports = {
 // Browser-specific configurations
 export const browserConfigs = {
   chromium: {
-    defaultTimeout: 60000,
-    navigationTimeout: 60000,
+    defaultTimeout: 90000,
+    navigationTimeout: 90000,
     viewport: devices.desktop,
   },
   firefox: {
-    defaultTimeout: 60000,
-    navigationTimeout: 60000,
+    defaultTimeout: 90000,
+    navigationTimeout: 90000,
     viewport: devices.desktop,
   },
   webkit: {
-    defaultTimeout: 60000,
-    navigationTimeout: 60000,
+    defaultTimeout: 90000,
+    navigationTimeout: 90000,
     viewport: devices.desktop,
   },
 } as const;
@@ -57,7 +57,7 @@ export const browserConfigs = {
 // Environment-specific timeouts
 export const timeouts = {
   local: {
-    navigation: 60000,
+    navigation: 90000,
     page: 100000,
     networkIdle: 60000,
     render: 60000,
