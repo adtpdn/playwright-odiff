@@ -27,17 +27,6 @@ const urls = process.env.TEST_URLS
   ? JSON.parse(process.env.TEST_URLS)
   : urlGroups["adenenergies-main"];
 
-const CONTEXT_OPTIONS = {
-  viewport: null, // Will be set per device
-  bypassCSP: true,
-  ignoreHTTPSErrors: true,
-  serviceWorkers: "block",
-  extraHTTPHeaders: {
-    "Accept-Language": "en-US,en;q=0.9",
-  },
-  userAgent: "playwright-testing",
-};
-
 function createFileNameFromUrl(url: string): string[] {
   const urlObj = new URL(url);
   const domain = urlObj.hostname.replace("www.", "");
@@ -76,38 +65,29 @@ function setupDirectories() {
 
 async function navigateWithRetry(page, url, retryCount = 0) {
   try {
-    if (!page.isClosed()) {
-      await page.goto(url, {
-        waitUntil: "domcontentloaded",
-        timeout: NAVIGATION_TIMEOUT,
-        ignoreHTTPSErrors: true,
-      });
+    await page.goto(url, {
+      waitUntil: "domcontentloaded",
+      timeout: NAVIGATION_TIMEOUT,
+      ignoreHTTPSErrors: true,
+    });
 
-      if (!page.isClosed()) {
-        try {
-          await page.waitForLoadState("load", { timeout: PAGE_TIMEOUT });
-        } catch (error) {
-          console.log(`Load state timeout for ${url}, continuing anyway`);
-        }
-
-        if (!page.isClosed()) {
-          try {
-            await page.waitForLoadState("networkidle", {
-              timeout: NETWORK_IDLE_TIMEOUT,
-            });
-          } catch (error) {
-            console.log(
-              `Network not completely idle for ${url}, continuing anyway`
-            );
-          }
-        }
-      }
-
-      return true;
+    try {
+      await page.waitForLoadState("load", { timeout: PAGE_TIMEOUT });
+    } catch (error) {
+      console.log(`Load state timeout for ${url}, continuing anyway`);
     }
-    return false;
+
+    try {
+      await page.waitForLoadState("networkidle", {
+        timeout: NETWORK_IDLE_TIMEOUT,
+      });
+    } catch (error) {
+      console.log(`Network not completely idle for ${url}, continuing anyway`);
+    }
+
+    return true;
   } catch (error) {
-    if (retryCount < MAX_RETRIES && !page.isClosed()) {
+    if (retryCount < MAX_RETRIES) {
       console.log(
         `Retrying navigation to ${url} (attempt ${
           retryCount + 1
@@ -126,103 +106,80 @@ const { currentDir, baselineDir } = setupDirectories();
 for (const [deviceType, viewport] of Object.entries(devices)) {
   test(`Screenshot comparison for ${deviceType}`, async ({ browser }) => {
     const browserName = browser.browserType().name();
-    let context;
-    let page;
+    const context = await browser.newContext({
+      viewport,
+      deviceScaleFactor: deviceType === "desktop" ? 1 : 2,
+    });
 
     try {
-      // Create context with merged options
-      context = await browser.newContext({
-        ...CONTEXT_OPTIONS,
-        viewport,
-        deviceScaleFactor: deviceType === "desktop" ? 1 : 2,
-        userAgent: `playwright-testing-${deviceType}`,
-      });
-
-      // Pre-create page to avoid context switching issues
-      page = await context.newPage();
-      await page.setDefaultNavigationTimeout(NAVIGATION_TIMEOUT);
-      await page.setDefaultTimeout(PAGE_TIMEOUT);
-
       for (const url of urls) {
         console.log(`Testing URL: ${url} on ${deviceType}`);
+        const page = await context.newPage();
 
         try {
-          // Clear memory and cache between URLs
-          await page.evaluate(() => {
-            window.performance?.memory &&
-              console.log("Memory:", window.performance.memory);
-            if (window.gc) window.gc();
-          });
+          // Set timeouts
+          page.setDefaultNavigationTimeout(NAVIGATION_TIMEOUT);
+          page.setDefaultTimeout(PAGE_TIMEOUT);
 
+          // Navigate to URL
           const navigationSuccess = await navigateWithRetry(page, url);
-          if (!navigationSuccess) continue;
+          if (!navigationSuccess) {
+            console.log(`Skipping ${url} due to navigation failure`);
+            continue;
+          }
 
-          // Wait for network and animations to settle
-          await Promise.race([
-            Promise.all([
-              page
-                .waitForLoadState("networkidle", {
-                  timeout: NETWORK_IDLE_TIMEOUT,
-                })
-                .catch(() => {}),
-              page
-                .waitForLoadState("domcontentloaded", { timeout: PAGE_TIMEOUT })
-                .catch(() => {}),
-            ]),
-            page.waitForTimeout(RENDER_TIMEOUT),
-          ]);
+          // Wait for layout to stabilize
+          await page.waitForTimeout(20000);
 
-          // Take and compare screenshots
           const [domainSlug, pageName] = createFileNameFromUrl(url);
           const fileName = `${domainSlug}-${pageName}-${browserName}-${deviceType}-${viewport.width}x${viewport.height}.png`;
 
-          if (!page.isClosed()) {
-            const currentPath = path.join(currentDir, browserName, fileName);
-            await page.screenshot({
-              path: currentPath,
-              fullPage: true,
-              timeout: PAGE_TIMEOUT * 2,
-            });
+          // Take screenshot
+          const currentPath = path.join(currentDir, browserName, fileName);
+          await page.screenshot({
+            path: currentPath,
+            fullPage: true,
+            timeout: PAGE_TIMEOUT,
+          });
 
-            // Compare with baseline
-            const baselinePath = path.join(baselineDir, browserName, fileName);
+          // Compare with baseline
+          const baselinePath = path.join(baselineDir, browserName, fileName);
 
-            if (fs.existsSync(baselinePath)) {
-              const diffPath = path.join(
-                currentDir,
-                browserName,
-                `diff-${fileName}`
+          if (fs.existsSync(baselinePath)) {
+            const diffPath = path.join(
+              currentDir,
+              browserName,
+              `diff-${fileName}`
+            );
+            try {
+              const { imagesAreSame } = await compareScreenshots(
+                baselinePath,
+                currentPath,
+                diffPath
               );
-              try {
-                const { imagesAreSame } = await compareScreenshots(
-                  baselinePath,
-                  currentPath,
-                  diffPath
-                );
-                console.log(
-                  `${imagesAreSame ? "⛓️ " : "🚧 "} ${fileName}: ${
-                    imagesAreSame ? "Match" : "Differ"
-                  }`
-                );
-              } catch (error) {
-                console.error(
-                  `Error comparing screenshots for ${fileName}:`,
-                  error
-                );
-              }
-            } else {
-              fs.copyFileSync(currentPath, baselinePath);
-              console.log(`📸 Created baseline for ${fileName}`);
+              console.log(
+                `${imagesAreSame ? "⛓️ " : "🚧 "} ${fileName}: ${
+                  imagesAreSame ? "Match" : "Differ"
+                }`
+              );
+            } catch (error) {
+              console.error(
+                `Error comparing screenshots for ${fileName}:`,
+                error
+              );
             }
+          } else {
+            fs.copyFileSync(currentPath, baselinePath);
+            console.log(`📸 Created baseline for ${fileName}`);
           }
         } catch (error) {
           console.error(`Error processing ${url} for ${deviceType}:`, error);
-          // Don't exit, continue with next URL
+        } finally {
+          await page.close().catch(() => {}); // Safely close the page
         }
       }
     } finally {
-      if (page && !page.isClosed()) await page.close().catch(() => {});
-      if (context) await context.close().catch(() => {});
+      await context.close().catch(() => {}); // Safely close the context
     }
   });
 }

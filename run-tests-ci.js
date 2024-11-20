@@ -8,28 +8,16 @@ if (!groupName || !urlGroups[groupName]) {
   process.exit(1);
 }
 
-// Set environment variables
 process.env.TEST_ENV = "ci";
 process.env.TEST_URLS = JSON.stringify(urlGroups[groupName]);
-process.env.NODE_OPTIONS = "--max-old-space-size=4096";
 
 try {
-  // Install browsers first
-  console.log("Installing Playwright browsers...");
-  execSync("npx playwright install --with-deps", {
-    stdio: "inherit",
-  });
-
-  // Run the tests
-  console.log("Running tests...");
-  execSync("npx playwright test --config=playwright.ci.config.ts --workers=1", {
+  execSync("npx playwright test --config=playwright.ci.config.ts", {
     stdio: "inherit",
     env: {
       ...process.env,
-      PLAYWRIGHT_BROWSERS_PATH: "0",
       TEST_URLS: JSON.stringify(urlGroups[groupName]),
     },
-    timeout: 30 * 60 * 1000, // 30 minutes
   });
 } catch (error) {
   console.error(`Error running CI tests: ${error.message}`);
