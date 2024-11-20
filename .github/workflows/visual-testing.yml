@@ -39,12 +39,12 @@ jobs:
         url_group: ${{fromJson(needs.prepare.outputs.url_groups)}}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version: "18"
 
       - name: Install dependencies
         run: npm ci
@@ -58,22 +58,45 @@ jobs:
       - name: Generate report
         run: node generate-report.js
 
-      - name: Upload screenshots artifact
+      - name: Upload test artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: screenshots-${{ matrix.url_group }}
-          path: screenshots
+          name: test-results-${{ matrix.url_group }}
+          path: |
+            test-results/ci
+            playwright-report/ci
+            screenshots/ci
+          retention-days: 30
 
   deploy:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create artifacts directory
+        run: mkdir -p artifacts
 
       - name: Download all artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/download-artifact@v4
         with:
+          pattern: test-results-*
           path: artifacts
+          merge-multiple: true
+
+      - name: List downloaded artifacts
+        run: |
+          echo "Artifacts directory content:"
+          ls -R artifacts/
 
       - name: Merge reports
         run: node merge-reports.js
