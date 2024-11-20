@@ -30,19 +30,20 @@ class ReportMerger {
       console.log("Starting report merge process...");
 
       // Ensure directories exist
+      this.ensureDirectoryExists(this.artifactsDir);
       this.ensureDirectoryExists(this.publicDir);
 
-      // Get all report directories
-      const reportDirs = fs
-        .readdirSync(this.artifactsDir)
-        .filter((dir) => dir.includes("report"))
-        .map((dir) => path.join(this.artifactsDir, dir));
+      // Log directory contents for debugging
+      console.log("Artifacts directory contents:");
+      this.listDirectoryContents(this.artifactsDir);
 
-      console.log(`Found ${reportDirs.length} report directories`);
+      // Find all test result directories
+      const testResults = this.findTestResults(this.artifactsDir);
+      console.log(`Found ${testResults.length} test result directories`);
 
-      // Process each report
-      for (const reportDir of reportDirs) {
-        await this.processReport(reportDir);
+      // Process each test result
+      for (const resultDir of testResults) {
+        await this.processTestResult(resultDir);
       }
 
       // Update summary
@@ -51,14 +52,53 @@ class ReportMerger {
       // Write merged report
       this.writeMergedReport();
 
-      // Copy assets
-      this.copyAssets();
-
       console.log("Report merge completed successfully");
     } catch (error) {
       console.error("Error merging reports:", error);
-      process.exit(1);
+      throw error;
     }
+  }
+
+  listDirectoryContents(dir) {
+    try {
+      const items = fs.readdirSync(dir);
+      items.forEach((item) => {
+        const fullPath = path.join(dir, item);
+        const stats = fs.statSync(fullPath);
+        if (stats.isDirectory()) {
+          console.log(`📁 ${fullPath}`);
+          this.listDirectoryContents(fullPath);
+        } else {
+          console.log(`📄 ${fullPath}`);
+        }
+      });
+    } catch (error) {
+      console.error(`Error listing directory ${dir}:`, error);
+    }
+  }
+
+  findTestResults(dir) {
+    const results = [];
+    try {
+      const items = fs.readdirSync(dir);
+      items.forEach((item) => {
+        const fullPath = path.join(dir, item);
+        if (fs.statSync(fullPath).isDirectory()) {
+          if (
+            item === "test-results" ||
+            item === "playwright-report" ||
+            item === "screenshots"
+          ) {
+            results.push(fullPath);
+          } else {
+            results.push(...this.findTestResults(fullPath));
+          }
+        }
+      });
+    } catch (error) {
+      console.error(`Error finding test results in ${dir}:`, error);
+    }
+    return results;
   }
 
   async processReport(reportDir) {
