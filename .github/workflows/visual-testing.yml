@@ -53,11 +53,23 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
+      - name: Create directories
+        run: |
+          mkdir -p screenshots/ci
+          mkdir -p screenshots/baseline
+          mkdir -p test-results/ci
+          mkdir -p playwright-report/ci
+
       - name: Run tests for ${{ matrix.url_group }}
+        env:
+          TEST_ENV: ci
+          TEST_URL_GROUP: ${{ matrix.url_group }}
         run: node run-tests-ci.js ${{ matrix.url_group }}
 
-      - name: Generate report
-        run: node generate-report.js
+      - name: List directories after tests
+        run: |
+          echo "Directory structure after tests:"
+          ls -R
 
       - name: Upload test artifacts
         if: always()
@@ -65,8 +77,8 @@ jobs:
         with:
           name: test-results-${{ matrix.url_group }}
           path: |
-            test-results/
-            playwright-report/
+            test-results/ci/
+            playwright-report/ci/
             screenshots/
           retention-days: 30
 
@@ -88,43 +100,60 @@ jobs:
 
       - name: Create directories
         run: |
-          mkdir -p artifacts
-          mkdir -p public
-          mkdir -p public/screenshots
+          mkdir -p downloaded-artifacts
+          mkdir -p public/screenshots/ci
+          mkdir -p public/screenshots/baseline
+          mkdir -p public/reports
+          mkdir -p public/test-results
 
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
+          path: downloaded-artifacts
           pattern: test-results-*
-          path: /
           merge-multiple: true
+
+      - name: List downloaded artifacts
+        run: |
+          echo "Downloaded artifacts structure:"
+          ls -R downloaded-artifacts/
 
       - name: Process artifacts
         run: |
-          # Copy playwright reports to public
-          cp -r artifacts/playwright-report/* public/ || true
+          # Copy screenshots
+          if [ -d "downloaded-artifacts/screenshots" ]; then
+            echo "Copying screenshots..."
+            cp -r downloaded-artifacts/screenshots/* public/screenshots/ || true
+          fi
 
-          # Copy screenshots to public/screenshots
-          cp -r /screenshots/* public/screenshots/ || true
+          # Copy playwright reports
+          if [ -d "downloaded-artifacts/playwright-report/ci" ]; then
+            echo "Copying playwright reports..."
+            cp -r downloaded-artifacts/playwright-report/ci/* public/ || true
+          fi
 
-          # Copy test results if needed
-          cp -r test-results/ public/test-results || true
+          # Copy test results
+          if [ -d "downloaded-artifacts/test-results/ci" ]; then
+            echo "Copying test results..."
+            cp -r downloaded-artifacts/test-results/ci public/test-results/ || true
+          fi
 
-      - name: Generate combined report
-        run: |
-          echo "Current directory structure:"
-          ls -R
-
-          echo "Generating report..."
-          node generate-report.js || true  # Continue even if report generation fails
-
-      - name: List directories
-        run: |
-          echo "Public directory content:"
+          echo "Final public directory structure:"
           ls -R public/
 
-          echo "Artifacts directory content:"
-          ls -R /
+      - name: Generate combined report
+        env:
+          TEST_ENV: ci
+        run: |
+          echo "Current working directory: $(pwd)"
+          echo "Directory structure before report generation:"
+          ls -R
+          node generate-report.js
+
+      - name: Verify public directory
+        run: |
+          echo "Final public directory contents:"
+          ls -R public/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

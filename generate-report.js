@@ -3,12 +3,37 @@ const fs = require("fs");
 const path = require("path");
 
 class ReportGenerator {
-  constructor() {
+  constructor(env = "ci") {
+    this.env = env;
     this.publicDir = path.join(process.cwd(), "public");
     this.reportsDir = path.join(this.publicDir, "reports");
+    this.screenshotsDir = path.join(process.cwd(), "screenshots", this.env);
+    this.baselineDir = path.join(process.cwd(), "screenshots", "baseline");
     this.artifactsDir = path.join(process.cwd(), "artifacts");
     this.reportDataPath = path.join(this.publicDir, "report-data.json");
     this.browsers = ["chromium", "firefox", "webkit"];
+  }
+
+  findScreenshotsDir() {
+    const possiblePaths = [
+      this.screenshotsDir,
+      path.join(this.artifactsDir, "screenshots", this.env),
+      path.join(process.cwd(), "downloaded-artifacts", "screenshots", this.env),
+      path.join(process.cwd(), `/screenshots/${this.env}`),
+    ];
+
+    for (const dir of possiblePaths) {
+      if (fs.existsSync(dir)) {
+        console.log(`Found screenshots directory at: ${dir}`);
+        return dir;
+      }
+    }
+
+    console.log(
+      "No screenshots directory found in these locations:",
+      possiblePaths
+    );
+    return null;
   }
 
   initialize() {
@@ -64,16 +89,17 @@ class ReportGenerator {
 
   processScreenshots() {
     const screenshots = [];
-    const screenshotsPath = path.join(this.artifactsDir, "screenshots/");
+    const screenshotsDir = this.findScreenshotsDir();
 
-    if (!fs.existsSync(screenshotsPath)) {
-      console.log(`No screenshots found in ${screenshotsPath}`);
+    if (!screenshotsDir) {
+      console.log("No screenshots directory found");
       return {};
     }
 
     this.browsers.forEach((browser) => {
-      const browserDir = path.join(screenshotsPath, browser);
+      const browserDir = path.join(screenshotsDir, browser);
       if (fs.existsSync(browserDir)) {
+        console.log(`Processing browser directory: ${browserDir}`);
         const browserScreenshots = fs
           .readdirSync(browserDir)
           .filter((f) => !f.startsWith("diff-"))
@@ -83,6 +109,9 @@ class ReportGenerator {
             path: path.join(browser, filename),
           }));
         screenshots.push(...browserScreenshots);
+        console.log(
+          `Found ${browserScreenshots.length} screenshots for ${browser}`
+        );
       }
     });
 
@@ -630,29 +659,31 @@ class ReportGenerator {
   }
 
   copyScreenshots() {
-    const sourceDir = path.join(this.artifactsDir, "screenshots");
-    const targetDir = path.join(this.publicDir, "screenshots");
-
-    if (!fs.existsSync(sourceDir)) {
-      console.log(`No screenshots directory found at ${sourceDir}`);
+    const sourceDir = this.findScreenshotsDir();
+    if (!sourceDir) {
       return;
     }
 
+    const targetDir = path.join(this.publicDir, "screenshots");
+
     try {
-      // Create screenshots directory if it doesn't exist
-      if (!fs.existsSync(targetDir)) {
-        fs.mkdirSync(targetDir, { recursive: true });
+      fs.mkdirSync(targetDir, { recursive: true });
+
+      // Copy baseline screenshots if they exist
+      if (fs.existsSync(this.baselineDir)) {
+        fs.cpSync(this.baselineDir, path.join(targetDir, "baseline"), {
+          recursive: true,
+          force: true,
+        });
       }
 
-      // Copy screenshots directory
-      fs.cpSync(sourceDir, targetDir, {
+      // Copy current screenshots
+      fs.cpSync(sourceDir, path.join(targetDir, this.env), {
         recursive: true,
         force: true,
       });
 
-      console.log(
-        `Successfully copied screenshots from ${sourceDir} to ${targetDir}`
-      );
+      console.log(`Successfully copied screenshots to ${targetDir}`);
     } catch (error) {
       console.error("Error copying screenshots:", error);
     }
