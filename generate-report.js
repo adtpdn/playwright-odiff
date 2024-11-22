@@ -6,18 +6,22 @@ class ReportGenerator {
   constructor() {
     this.publicDir = path.join(process.cwd(), "public");
     this.reportsDir = path.join(this.publicDir, "reports");
-    this.screenshotsDir = path.join(process.cwd(), "screenshots");
+    this.artifactsDir = path.join(process.cwd(), "artifacts");
     this.reportDataPath = path.join(this.publicDir, "report-data.json");
     this.browsers = ["chromium", "firefox", "webkit"];
   }
 
   initialize() {
-    if (!fs.existsSync(this.publicDir)) {
-      fs.mkdirSync(this.publicDir, { recursive: true });
-    }
-    if (!fs.existsSync(this.reportsDir)) {
-      fs.mkdirSync(this.reportsDir);
-    }
+    // Create necessary directories
+    [
+      this.publicDir,
+      this.reportsDir,
+      path.join(this.publicDir, "screenshots"),
+    ].forEach((dir) => {
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+    });
   }
 
   loadExistingData() {
@@ -60,11 +64,15 @@ class ReportGenerator {
 
   processScreenshots() {
     const screenshots = [];
-    const baselineDir = path.join(this.screenshotsDir, "baseline");
-    const currentDir = path.join(this.screenshotsDir);
+    const screenshotsPath = path.join(this.artifactsDir, "screenshots/ci");
+
+    if (!fs.existsSync(screenshotsPath)) {
+      console.log(`No screenshots found in ${screenshotsPath}`);
+      return {};
+    }
 
     this.browsers.forEach((browser) => {
-      const browserDir = path.join(currentDir, browser);
+      const browserDir = path.join(screenshotsPath, browser);
       if (fs.existsSync(browserDir)) {
         const browserScreenshots = fs
           .readdirSync(browserDir)
@@ -622,25 +630,65 @@ class ReportGenerator {
   }
 
   copyScreenshots() {
-    fs.cpSync(this.screenshotsDir, path.join(this.publicDir, "screenshots"), {
-      recursive: true,
-    });
+    const sourceDir = path.join(this.artifactsDir, "screenshots/ci");
+    const targetDir = path.join(this.publicDir, "screenshots");
+
+    if (!fs.existsSync(sourceDir)) {
+      console.log(`No screenshots directory found at ${sourceDir}`);
+      return;
+    }
+
+    try {
+      // Create screenshots directory if it doesn't exist
+      if (!fs.existsSync(targetDir)) {
+        fs.mkdirSync(targetDir, { recursive: true });
+      }
+
+      // Copy screenshots directory
+      fs.cpSync(sourceDir, targetDir, {
+        recursive: true,
+        force: true,
+      });
+
+      console.log(
+        `Successfully copied screenshots from ${sourceDir} to ${targetDir}`
+      );
+    } catch (error) {
+      console.error("Error copying screenshots:", error);
+    }
   }
 
   generate() {
+    console.log("Initializing report generation...");
     this.initialize();
+
+    console.log("Loading existing data...");
     const existingData = this.loadExistingData();
+
+    console.log("Processing screenshots...");
     const newData = this.processScreenshots();
+
+    console.log("Merging data...");
     const mergedData = this.mergeData(existingData, newData);
 
+    console.log("Saving report data...");
     this.saveReportData(mergedData);
+
+    console.log("Generating HTML...");
     this.generateHTML(mergedData);
+
+    console.log("Copying screenshots...");
     this.copyScreenshots();
+
+    console.log("Report generation completed");
   }
 }
 
-module.exports = { ReportGenerator };
+// Only run if called directly
+if (require.main === module) {
+  console.log("Starting report generation...");
+  const reportGenerator = new ReportGenerator();
+  reportGenerator.generate();
+}
 
-// Create and run the report generator
-const reportGenerator = new ReportGenerator();
-reportGenerator.generate();
+module.exports = { ReportGenerator };

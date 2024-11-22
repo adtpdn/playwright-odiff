@@ -110,7 +110,12 @@ jobs:
           cp -r artifacts/test-results/ci public/test-results || true
 
       - name: Generate combined report
-        run: node generate-report.js
+        run: |
+          echo "Current directory structure:"
+          ls -R
+
+          echo "Generating report..."
+          node generate-report.js || true  # Continue even if report generation fails
 
       - name: List directories
         run: |
