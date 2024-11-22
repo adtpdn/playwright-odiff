@@ -7,8 +7,9 @@ class ReportGenerator {
     this.env = env;
     this.publicDir = path.join(process.cwd(), "public");
     this.reportsDir = path.join(this.publicDir, "reports");
-    this.screenshotsDir = path.join(process.cwd(), "screenshots", this.env);
-    this.baselineDir = path.join(process.cwd(), "screenshots", "baseline");
+    this.screenshotsDir = path.join(process.cwd(), "screenshots");
+    this.currentDir = path.join(this.screenshotsDir, this.env);
+    this.baselineDir = path.join(this.screenshotsDir, "baseline");
     this.artifactsDir = path.join(process.cwd(), "artifacts");
     this.reportDataPath = path.join(this.publicDir, "report-data.json");
     this.browsers = ["chromium", "firefox", "webkit"];
@@ -16,10 +17,9 @@ class ReportGenerator {
 
   findScreenshotsDir() {
     const possiblePaths = [
-      this.screenshotsDir,
+      this.currentDir,
       path.join(this.artifactsDir, "screenshots", this.env),
       path.join(process.cwd(), "downloaded-artifacts", "screenshots", this.env),
-      path.join(process.cwd(), `/screenshots/${this.env}`),
     ];
 
     for (const dir of possiblePaths) {
@@ -134,9 +134,11 @@ class ReportGenerator {
       groupedByUrl[metadata.url].screenshots.push({
         ...metadata,
         baseline: path.join("screenshots/baseline", browser, filename),
-        current: path.join("screenshots", browser, filename),
-        diff: fs.existsSync(path.join(currentDir, browser, `diff-${filename}`))
-          ? path.join("screenshots", browser, `diff-${filename}`)
+        current: path.join(`screenshots/${this.env}`, browser, filename),
+        diff: fs.existsSync(
+          path.join(screenshotsDir, browser, `diff-${filename}`)
+        )
+          ? path.join(`screenshots/${this.env}`, browser, `diff-${filename}`)
           : null,
       });
     });
@@ -667,6 +669,7 @@ class ReportGenerator {
     const targetDir = path.join(this.publicDir, "screenshots");
 
     try {
+      // Create screenshots directory if it doesn't exist
       fs.mkdirSync(targetDir, { recursive: true });
 
       // Copy baseline screenshots if they exist
