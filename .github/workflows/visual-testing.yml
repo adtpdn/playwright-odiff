@@ -13,6 +13,7 @@ on:
           - "adenenergies-zh"
           - "adengroup-main"
           - "adengroup-cn"
+          - "test"
   schedule:
     - cron: "0 0 * * *" # Run daily at midnight
 
@@ -27,7 +28,7 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "groups=['${{ github.event.inputs.url_group }}']" >> $GITHUB_OUTPUT
           else
-            echo "groups=['adenenergies-main','adenenergies-zh','adengroup-main','adengroup-cn']" >> $GITHUB_OUTPUT
+            echo "groups=['adenenergies-main','adenenergies-zh','adengroup-main','adengroup-cn','test']" >> $GITHUB_OUTPUT
           fi
 
   test:
@@ -64,9 +65,9 @@ jobs:
         with:
           name: test-results-${{ matrix.url_group }}
           path: |
-            test-results/ci
-            playwright-report/ci
-            screenshots/ci
+            test-results/
+            playwright-report/
+            screenshots/
           retention-days: 30
 
   deploy:
@@ -95,19 +96,19 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           pattern: test-results-*
-          path: artifacts
+          path: /
           merge-multiple: true
 
       - name: Process artifacts
         run: |
           # Copy playwright reports to public
-          cp -r artifacts/playwright-report/ci/* public/ || true
+          cp -r artifacts/playwright-report/* public/ || true
 
           # Copy screenshots to public/screenshots
-          cp -r artifacts/screenshots/ci/* public/screenshots/ || true
+          cp -r /screenshots/* public/screenshots/ || true
 
           # Copy test results if needed
-          cp -r artifacts/test-results/ci public/test-results || true
+          cp -r test-results/ public/test-results || true
 
       - name: Generate combined report
         run: |
@@ -123,7 +124,7 @@ jobs:
           ls -R public/
 
           echo "Artifacts directory content:"
-          ls -R artifacts/
+          ls -R /
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

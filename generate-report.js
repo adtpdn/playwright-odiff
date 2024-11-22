@@ -64,7 +64,7 @@ class ReportGenerator {
 
   processScreenshots() {
     const screenshots = [];
-    const screenshotsPath = path.join(this.artifactsDir, "screenshots/ci");
+    const screenshotsPath = path.join(this.artifactsDir, "screenshots/");
 
     if (!fs.existsSync(screenshotsPath)) {
       console.log(`No screenshots found in ${screenshotsPath}`);
@@ -630,7 +630,7 @@ class ReportGenerator {
   }
 
   copyScreenshots() {
-    const sourceDir = path.join(this.artifactsDir, "screenshots/ci");
+    const sourceDir = path.join(this.artifactsDir, "screenshots");
     const targetDir = path.join(this.publicDir, "screenshots");
 
     if (!fs.existsSync(sourceDir)) {

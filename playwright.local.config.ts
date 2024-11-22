@@ -6,7 +6,7 @@ const config: PlaywrightTestConfig = {
   testDir: "./tests",
   timeout: 180000, // 3 minutes per test
   globalTimeout: 7200000, // 2 hours total
-  outputDir: "./test-results/local",
+  outputDir: "./test-results",
   workers: 3, // Optimal for local testing
   use: {
     ignoreHTTPSErrors: true,
@@ -20,7 +20,7 @@ const config: PlaywrightTestConfig = {
     timeout: timeouts.local.page,
   },
   retries: 1,
-  reporter: [["html", { outputFolder: "playwright-report/local" }], ["list"]],
+  reporter: [["html", { outputFolder: "playwright-report" }], ["list"]],
   preserveOutput: "failures-only",
   projects: [
     // Desktop Projects

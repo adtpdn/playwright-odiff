@@ -6,7 +6,7 @@ const config: PlaywrightTestConfig = {
   testDir: "./tests",
   timeout: 120000, // 2 minutes per test
   globalTimeout: 1800000, // 30 minutes total
-  outputDir: "./test-results/ci",
+  outputDir: "./test-results",
   workers: 1, // Limited for CI
   use: {
     ignoreHTTPSErrors: true,
@@ -21,7 +21,7 @@ const config: PlaywrightTestConfig = {
   },
   retries: 2, // More retries for CI
   reporter: [
-    ["html", { outputFolder: "playwright-report/ci" }],
+    ["html", { outputFolder: "playwright-report" }],
     ["list"],
     ["github"],
   ],

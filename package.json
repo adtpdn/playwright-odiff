@@ -8,6 +8,7 @@
     "test:local:adenenergies-zh": "node run-tests-local.js adenenergies-zh",
     "test:local:adengroup": "node run-tests-local.js adengroup-main",
     "test:local:adengroup-cn": "node run-tests-local.js adengroup-cn",
+    "test:local:test": "node run-tests-local.js test",
     "test:local:report": "node generate-report.js",
     "test:ci": "node run-tests-ci.js",
     "test:ci:report": "node generate-report.js",

@@ -28,4 +28,5 @@ module.exports = {
     "https://adengroup.com/cn/contact/",
     "https://adengroup.com/cn/media/",
   ],
+  test: ["https://example.com"],
 };
