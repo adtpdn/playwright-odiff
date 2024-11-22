@@ -29,6 +29,7 @@ jobs:
           else
             echo "groups=['adenenergies-main','adenenergies-zh','adengroup-main','adengroup-cn']" >> $GITHUB_OUTPUT
           fi
+
   test:
     needs: prepare
     runs-on: ubuntu-latest
@@ -71,16 +72,25 @@ jobs:
   deploy:
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v3
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "18"
+
       - name: Install dependencies
         run: npm ci
-      - name: Create artifacts directory
-        run: mkdir -p artifacts
+
+      - name: Create directories
+        run: |
+          mkdir -p artifacts
+          mkdir -p public
+          mkdir -p public/screenshots
+
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
@@ -88,14 +98,35 @@ jobs:
           path: artifacts
           merge-multiple: true
 
-      - name: List downloaded artifacts
+      - name: Process artifacts
         run: |
+          # Copy playwright reports to public
+          cp -r artifacts/playwright-report/ci/* public/ || true
+
+          # Copy screenshots to public/screenshots
+          cp -r artifacts/screenshots/ci/* public/screenshots/ || true
+
+          # Copy test results if needed
+          cp -r artifacts/test-results/ci public/test-results || true
+
+      - name: Generate combined report
+        run: node generate-report.js
+
+      - name: List directories
+        run: |
+          echo "Public directory content:"
+          ls -R public/
+
           echo "Artifacts directory content:"
           ls -R artifacts/
 
-          
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
+          enable_jekyll: false
+          force_orphan: true
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_message: "Deploy to GitHub Pages [skip ci]"

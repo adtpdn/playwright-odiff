@@ -13,7 +13,7 @@ class ReportGenerator {
 
   initialize() {
     if (!fs.existsSync(this.publicDir)) {
-      fs.mkdirSync(this.publicDir);
+      fs.mkdirSync(this.publicDir, { recursive: true });
     }
     if (!fs.existsSync(this.reportsDir)) {
       fs.mkdirSync(this.reportsDir);
