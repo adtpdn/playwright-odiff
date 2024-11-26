@@ -1,0 +1,1552 @@
+[
+  {
+    "runId": "2024-11-26T01-29-00-184Z",
+    "timestamp": "2024-11-26T01:29:00.184Z",
+    "data": {
+      "adenenergiescom/about": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "adenenergiescom/about",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-about-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.177Z",
+            "baseline": "screenshots/baseline/chromium/adenenergiescom-about-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/adenenergiescom-about-chromium-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/about",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-about-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.178Z",
+            "baseline": "screenshots/baseline/chromium/adenenergiescom-about-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/adenenergiescom-about-chromium-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/about",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-about-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adenenergiescom-about-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/adenenergiescom-about-firefox-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/about",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-about-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adenenergiescom-about-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/adenenergiescom-about-firefox-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/about",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-about-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.182Z",
+            "baseline": "screenshots/baseline/webkit/adenenergiescom-about-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/adenenergiescom-about-webkit-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/about",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-about-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.182Z",
+            "baseline": "screenshots/baseline/webkit/adenenergiescom-about-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/adenenergiescom-about-webkit-mobile-375x667.png",
+            "diff": "screenshots/ci/webkit/diff-adenenergiescom-about-webkit-mobile-375x667.png"
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.177Z"
+      },
+      "adenenergiescom/contact": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "adenenergiescom/contact",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-contact-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.178Z",
+            "baseline": "screenshots/baseline/chromium/adenenergiescom-contact-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/adenenergiescom-contact-chromium-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/contact",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-contact-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.178Z",
+            "baseline": "screenshots/baseline/chromium/adenenergiescom-contact-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/adenenergiescom-contact-chromium-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/contact",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-contact-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adenenergiescom-contact-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/adenenergiescom-contact-firefox-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/contact",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-contact-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adenenergiescom-contact-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/adenenergiescom-contact-firefox-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/contact",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-contact-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.182Z",
+            "baseline": "screenshots/baseline/webkit/adenenergiescom-contact-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/adenenergiescom-contact-webkit-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/contact",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-contact-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.182Z",
+            "baseline": "screenshots/baseline/webkit/adenenergiescom-contact-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/adenenergiescom-contact-webkit-mobile-375x667.png",
+            "diff": null
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.178Z"
+      },
+      "adenenergiescom": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "adenenergiescom",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-home-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.178Z",
+            "baseline": "screenshots/baseline/chromium/adenenergiescom-home-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/adenenergiescom-home-chromium-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-home-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.178Z",
+            "baseline": "screenshots/baseline/chromium/adenenergiescom-home-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/adenenergiescom-home-chromium-mobile-375x667.png",
+            "diff": "screenshots/ci/chromium/diff-adenenergiescom-home-chromium-mobile-375x667.png"
+          },
+          {
+            "url": "adenenergiescom",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-home-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adenenergiescom-home-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/adenenergiescom-home-firefox-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-home-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adenenergiescom-home-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/adenenergiescom-home-firefox-mobile-375x667.png",
+            "diff": "screenshots/ci/firefox/diff-adenenergiescom-home-firefox-mobile-375x667.png"
+          },
+          {
+            "url": "adenenergiescom",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-home-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.182Z",
+            "baseline": "screenshots/baseline/webkit/adenenergiescom-home-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/adenenergiescom-home-webkit-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-home-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.182Z",
+            "baseline": "screenshots/baseline/webkit/adenenergiescom-home-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/adenenergiescom-home-webkit-mobile-375x667.png",
+            "diff": null
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.178Z"
+      },
+      "adenenergiescom/media": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "adenenergiescom/media",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-media-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.178Z",
+            "baseline": "screenshots/baseline/chromium/adenenergiescom-media-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/adenenergiescom-media-chromium-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/media",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-media-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.178Z",
+            "baseline": "screenshots/baseline/chromium/adenenergiescom-media-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/adenenergiescom-media-chromium-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/media",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-media-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adenenergiescom-media-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/adenenergiescom-media-firefox-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/media",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-media-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adenenergiescom-media-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/adenenergiescom-media-firefox-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/media",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-media-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.182Z",
+            "baseline": "screenshots/baseline/webkit/adenenergiescom-media-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/adenenergiescom-media-webkit-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/media",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-media-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adenenergiescom-media-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/adenenergiescom-media-webkit-mobile-375x667.png",
+            "diff": null
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.178Z"
+      },
+      "adenenergiescom/solutions": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "adenenergiescom/solutions",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-solutions-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.178Z",
+            "baseline": "screenshots/baseline/chromium/adenenergiescom-solutions-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/adenenergiescom-solutions-chromium-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/solutions",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-solutions-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.178Z",
+            "baseline": "screenshots/baseline/chromium/adenenergiescom-solutions-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/adenenergiescom-solutions-chromium-mobile-375x667.png",
+            "diff": "screenshots/ci/chromium/diff-adenenergiescom-solutions-chromium-mobile-375x667.png"
+          },
+          {
+            "url": "adenenergiescom/solutions",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-solutions-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adenenergiescom-solutions-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/adenenergiescom-solutions-firefox-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/solutions",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-solutions-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adenenergiescom-solutions-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/adenenergiescom-solutions-firefox-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/solutions",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-solutions-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adenenergiescom-solutions-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/adenenergiescom-solutions-webkit-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/solutions",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-solutions-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adenenergiescom-solutions-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/adenenergiescom-solutions-webkit-mobile-375x667.png",
+            "diff": "screenshots/ci/webkit/diff-adenenergiescom-solutions-webkit-mobile-375x667.png"
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.178Z"
+      },
+      "adenenergiescom/zh": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "adenenergiescom/zh",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-zh-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.178Z",
+            "baseline": "screenshots/baseline/chromium/adenenergiescom-zh-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/adenenergiescom-zh-chromium-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/zh",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-zh-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.179Z",
+            "baseline": "screenshots/baseline/chromium/adenenergiescom-zh-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/adenenergiescom-zh-chromium-mobile-375x667.png",
+            "diff": "screenshots/ci/chromium/diff-adenenergiescom-zh-chromium-mobile-375x667.png"
+          },
+          {
+            "url": "adenenergiescom/zh",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-zh-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adenenergiescom-zh-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/adenenergiescom-zh-firefox-desktop-1280x720.png",
+            "diff": "screenshots/ci/firefox/diff-adenenergiescom-zh-firefox-desktop-1280x720.png"
+          },
+          {
+            "url": "adenenergiescom/zh",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-zh-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adenenergiescom-zh-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/adenenergiescom-zh-firefox-mobile-375x667.png",
+            "diff": "screenshots/ci/firefox/diff-adenenergiescom-zh-firefox-mobile-375x667.png"
+          },
+          {
+            "url": "adenenergiescom/zh",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-zh-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adenenergiescom-zh-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/adenenergiescom-zh-webkit-desktop-1280x720.png",
+            "diff": "screenshots/ci/webkit/diff-adenenergiescom-zh-webkit-desktop-1280x720.png"
+          },
+          {
+            "url": "adenenergiescom/zh",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-zh-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adenenergiescom-zh-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/adenenergiescom-zh-webkit-mobile-375x667.png",
+            "diff": "screenshots/ci/webkit/diff-adenenergiescom-zh-webkit-mobile-375x667.png"
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.178Z"
+      },
+      "adenenergiescom/zh_about": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "adenenergiescom/zh_about",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-zh_about-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.179Z",
+            "baseline": "screenshots/baseline/chromium/adenenergiescom-zh_about-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/adenenergiescom-zh_about-chromium-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/zh_about",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-zh_about-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.179Z",
+            "baseline": "screenshots/baseline/chromium/adenenergiescom-zh_about-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/adenenergiescom-zh_about-chromium-mobile-375x667.png",
+            "diff": "screenshots/ci/chromium/diff-adenenergiescom-zh_about-chromium-mobile-375x667.png"
+          },
+          {
+            "url": "adenenergiescom/zh_about",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-zh_about-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adenenergiescom-zh_about-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/adenenergiescom-zh_about-firefox-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/zh_about",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-zh_about-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adenenergiescom-zh_about-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/adenenergiescom-zh_about-firefox-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/zh_about",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-zh_about-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adenenergiescom-zh_about-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/adenenergiescom-zh_about-webkit-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/zh_about",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-zh_about-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adenenergiescom-zh_about-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/adenenergiescom-zh_about-webkit-mobile-375x667.png",
+            "diff": null
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.179Z"
+      },
+      "adenenergiescom/zh_contact": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "adenenergiescom/zh_contact",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-zh_contact-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.179Z",
+            "baseline": "screenshots/baseline/chromium/adenenergiescom-zh_contact-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/adenenergiescom-zh_contact-chromium-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/zh_contact",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-zh_contact-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.179Z",
+            "baseline": "screenshots/baseline/chromium/adenenergiescom-zh_contact-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/adenenergiescom-zh_contact-chromium-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/zh_contact",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-zh_contact-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adenenergiescom-zh_contact-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/adenenergiescom-zh_contact-firefox-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/zh_contact",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-zh_contact-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adenenergiescom-zh_contact-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/adenenergiescom-zh_contact-firefox-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/zh_contact",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-zh_contact-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adenenergiescom-zh_contact-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/adenenergiescom-zh_contact-webkit-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/zh_contact",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-zh_contact-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adenenergiescom-zh_contact-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/adenenergiescom-zh_contact-webkit-mobile-375x667.png",
+            "diff": null
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.179Z"
+      },
+      "adenenergiescom/zh_media": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "adenenergiescom/zh_media",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-zh_media-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.179Z",
+            "baseline": "screenshots/baseline/chromium/adenenergiescom-zh_media-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/adenenergiescom-zh_media-chromium-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/zh_media",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-zh_media-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.179Z",
+            "baseline": "screenshots/baseline/chromium/adenenergiescom-zh_media-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/adenenergiescom-zh_media-chromium-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/zh_media",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-zh_media-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adenenergiescom-zh_media-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/adenenergiescom-zh_media-firefox-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/zh_media",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-zh_media-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adenenergiescom-zh_media-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/adenenergiescom-zh_media-firefox-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/zh_media",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-zh_media-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adenenergiescom-zh_media-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/adenenergiescom-zh_media-webkit-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/zh_media",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-zh_media-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adenenergiescom-zh_media-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/adenenergiescom-zh_media-webkit-mobile-375x667.png",
+            "diff": null
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.179Z"
+      },
+      "adenenergiescom/zh_solutions": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "adenenergiescom/zh_solutions",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-zh_solutions-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.179Z",
+            "baseline": "screenshots/baseline/chromium/adenenergiescom-zh_solutions-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/adenenergiescom-zh_solutions-chromium-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/zh_solutions",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-zh_solutions-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.179Z",
+            "baseline": "screenshots/baseline/chromium/adenenergiescom-zh_solutions-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/adenenergiescom-zh_solutions-chromium-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/zh_solutions",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-zh_solutions-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adenenergiescom-zh_solutions-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/adenenergiescom-zh_solutions-firefox-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/zh_solutions",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-zh_solutions-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adenenergiescom-zh_solutions-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/adenenergiescom-zh_solutions-firefox-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/zh_solutions",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adenenergiescom-zh_solutions-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adenenergiescom-zh_solutions-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/adenenergiescom-zh_solutions-webkit-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adenenergiescom/zh_solutions",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adenenergiescom-zh_solutions-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adenenergiescom-zh_solutions-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/adenenergiescom-zh_solutions-webkit-mobile-375x667.png",
+            "diff": "screenshots/ci/webkit/diff-adenenergiescom-zh_solutions-webkit-mobile-375x667.png"
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.179Z"
+      },
+      "adengroupcom/about": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "adengroupcom/about",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-about-us-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.179Z",
+            "baseline": "screenshots/baseline/chromium/adengroupcom-about-us-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/adengroupcom-about-us-chromium-desktop-1280x720.png",
+            "diff": "screenshots/ci/chromium/diff-adengroupcom-about-us-chromium-desktop-1280x720.png"
+          },
+          {
+            "url": "adengroupcom/about",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-about-us-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.179Z",
+            "baseline": "screenshots/baseline/chromium/adengroupcom-about-us-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/adengroupcom-about-us-chromium-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/about",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-about-us-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adengroupcom-about-us-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/adengroupcom-about-us-firefox-desktop-1280x720.png",
+            "diff": "screenshots/ci/firefox/diff-adengroupcom-about-us-firefox-desktop-1280x720.png"
+          },
+          {
+            "url": "adengroupcom/about",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-about-us-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adengroupcom-about-us-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/adengroupcom-about-us-firefox-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/about",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-about-us-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adengroupcom-about-us-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/adengroupcom-about-us-webkit-desktop-1280x720.png",
+            "diff": "screenshots/ci/webkit/diff-adengroupcom-about-us-webkit-desktop-1280x720.png"
+          },
+          {
+            "url": "adengroupcom/about",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-about-us-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adengroupcom-about-us-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/adengroupcom-about-us-webkit-mobile-375x667.png",
+            "diff": "screenshots/ci/webkit/diff-adengroupcom-about-us-webkit-mobile-375x667.png"
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.179Z"
+      },
+      "adengroupcom/careers": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "adengroupcom/careers",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-careers-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.179Z",
+            "baseline": "screenshots/baseline/chromium/adengroupcom-careers-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/adengroupcom-careers-chromium-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/careers",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-careers-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.180Z",
+            "baseline": "screenshots/baseline/chromium/adengroupcom-careers-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/adengroupcom-careers-chromium-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/careers",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-careers-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adengroupcom-careers-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/adengroupcom-careers-firefox-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/careers",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-careers-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adengroupcom-careers-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/adengroupcom-careers-firefox-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/careers",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-careers-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adengroupcom-careers-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/adengroupcom-careers-webkit-desktop-1280x720.png",
+            "diff": "screenshots/ci/webkit/diff-adengroupcom-careers-webkit-desktop-1280x720.png"
+          },
+          {
+            "url": "adengroupcom/careers",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-careers-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adengroupcom-careers-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/adengroupcom-careers-webkit-mobile-375x667.png",
+            "diff": null
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.179Z"
+      },
+      "adengroupcom/cn": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "adengroupcom/cn",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-cn-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.180Z",
+            "baseline": "screenshots/baseline/chromium/adengroupcom-cn-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/adengroupcom-cn-chromium-desktop-1280x720.png",
+            "diff": "screenshots/ci/chromium/diff-adengroupcom-cn-chromium-desktop-1280x720.png"
+          },
+          {
+            "url": "adengroupcom/cn",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-cn-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.180Z",
+            "baseline": "screenshots/baseline/chromium/adengroupcom-cn-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/adengroupcom-cn-chromium-mobile-375x667.png",
+            "diff": "screenshots/ci/chromium/diff-adengroupcom-cn-chromium-mobile-375x667.png"
+          },
+          {
+            "url": "adengroupcom/cn",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-cn-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adengroupcom-cn-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/adengroupcom-cn-firefox-desktop-1280x720.png",
+            "diff": "screenshots/ci/firefox/diff-adengroupcom-cn-firefox-desktop-1280x720.png"
+          },
+          {
+            "url": "adengroupcom/cn",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-cn-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adengroupcom-cn-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/adengroupcom-cn-firefox-mobile-375x667.png",
+            "diff": "screenshots/ci/firefox/diff-adengroupcom-cn-firefox-mobile-375x667.png"
+          },
+          {
+            "url": "adengroupcom/cn",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-cn-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adengroupcom-cn-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/adengroupcom-cn-webkit-desktop-1280x720.png",
+            "diff": "screenshots/ci/webkit/diff-adengroupcom-cn-webkit-desktop-1280x720.png"
+          },
+          {
+            "url": "adengroupcom/cn",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-cn-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adengroupcom-cn-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/adengroupcom-cn-webkit-mobile-375x667.png",
+            "diff": "screenshots/ci/webkit/diff-adengroupcom-cn-webkit-mobile-375x667.png"
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.180Z"
+      },
+      "adengroupcom/cn_about": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "adengroupcom/cn_about",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-cn_about-us-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.180Z",
+            "baseline": "screenshots/baseline/chromium/adengroupcom-cn_about-us-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/adengroupcom-cn_about-us-chromium-desktop-1280x720.png",
+            "diff": "screenshots/ci/chromium/diff-adengroupcom-cn_about-us-chromium-desktop-1280x720.png"
+          },
+          {
+            "url": "adengroupcom/cn_about",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-cn_about-us-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.180Z",
+            "baseline": "screenshots/baseline/chromium/adengroupcom-cn_about-us-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/adengroupcom-cn_about-us-chromium-mobile-375x667.png",
+            "diff": "screenshots/ci/chromium/diff-adengroupcom-cn_about-us-chromium-mobile-375x667.png"
+          },
+          {
+            "url": "adengroupcom/cn_about",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-cn_about-us-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adengroupcom-cn_about-us-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/adengroupcom-cn_about-us-firefox-desktop-1280x720.png",
+            "diff": "screenshots/ci/firefox/diff-adengroupcom-cn_about-us-firefox-desktop-1280x720.png"
+          },
+          {
+            "url": "adengroupcom/cn_about",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-cn_about-us-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adengroupcom-cn_about-us-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/adengroupcom-cn_about-us-firefox-mobile-375x667.png",
+            "diff": "screenshots/ci/firefox/diff-adengroupcom-cn_about-us-firefox-mobile-375x667.png"
+          },
+          {
+            "url": "adengroupcom/cn_about",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-cn_about-us-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adengroupcom-cn_about-us-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/adengroupcom-cn_about-us-webkit-desktop-1280x720.png",
+            "diff": "screenshots/ci/webkit/diff-adengroupcom-cn_about-us-webkit-desktop-1280x720.png"
+          },
+          {
+            "url": "adengroupcom/cn_about",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-cn_about-us-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adengroupcom-cn_about-us-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/adengroupcom-cn_about-us-webkit-mobile-375x667.png",
+            "diff": "screenshots/ci/webkit/diff-adengroupcom-cn_about-us-webkit-mobile-375x667.png"
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.180Z"
+      },
+      "adengroupcom/cn_careers": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "adengroupcom/cn_careers",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-cn_careers-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.180Z",
+            "baseline": "screenshots/baseline/chromium/adengroupcom-cn_careers-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/adengroupcom-cn_careers-chromium-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/cn_careers",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-cn_careers-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.180Z",
+            "baseline": "screenshots/baseline/chromium/adengroupcom-cn_careers-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/adengroupcom-cn_careers-chromium-mobile-375x667.png",
+            "diff": "screenshots/ci/chromium/diff-adengroupcom-cn_careers-chromium-mobile-375x667.png"
+          },
+          {
+            "url": "adengroupcom/cn_careers",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-cn_careers-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adengroupcom-cn_careers-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/adengroupcom-cn_careers-firefox-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/cn_careers",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-cn_careers-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adengroupcom-cn_careers-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/adengroupcom-cn_careers-firefox-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/cn_careers",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-cn_careers-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adengroupcom-cn_careers-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/adengroupcom-cn_careers-webkit-desktop-1280x720.png",
+            "diff": "screenshots/ci/webkit/diff-adengroupcom-cn_careers-webkit-desktop-1280x720.png"
+          },
+          {
+            "url": "adengroupcom/cn_careers",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-cn_careers-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adengroupcom-cn_careers-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/adengroupcom-cn_careers-webkit-mobile-375x667.png",
+            "diff": null
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.180Z"
+      },
+      "adengroupcom/cn_contact": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "adengroupcom/cn_contact",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-cn_contact-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.180Z",
+            "baseline": "screenshots/baseline/chromium/adengroupcom-cn_contact-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/adengroupcom-cn_contact-chromium-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/cn_contact",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-cn_contact-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.180Z",
+            "baseline": "screenshots/baseline/chromium/adengroupcom-cn_contact-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/adengroupcom-cn_contact-chromium-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/cn_contact",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-cn_contact-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adengroupcom-cn_contact-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/adengroupcom-cn_contact-firefox-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/cn_contact",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-cn_contact-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adengroupcom-cn_contact-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/adengroupcom-cn_contact-firefox-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/cn_contact",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-cn_contact-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adengroupcom-cn_contact-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/adengroupcom-cn_contact-webkit-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/cn_contact",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-cn_contact-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adengroupcom-cn_contact-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/adengroupcom-cn_contact-webkit-mobile-375x667.png",
+            "diff": null
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.180Z"
+      },
+      "adengroupcom/cn_media": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "adengroupcom/cn_media",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-cn_media-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.180Z",
+            "baseline": "screenshots/baseline/chromium/adengroupcom-cn_media-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/adengroupcom-cn_media-chromium-desktop-1280x720.png",
+            "diff": "screenshots/ci/chromium/diff-adengroupcom-cn_media-chromium-desktop-1280x720.png"
+          },
+          {
+            "url": "adengroupcom/cn_media",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-cn_media-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.180Z",
+            "baseline": "screenshots/baseline/chromium/adengroupcom-cn_media-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/adengroupcom-cn_media-chromium-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/cn_media",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-cn_media-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adengroupcom-cn_media-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/adengroupcom-cn_media-firefox-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/cn_media",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-cn_media-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adengroupcom-cn_media-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/adengroupcom-cn_media-firefox-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/cn_media",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-cn_media-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adengroupcom-cn_media-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/adengroupcom-cn_media-webkit-desktop-1280x720.png",
+            "diff": "screenshots/ci/webkit/diff-adengroupcom-cn_media-webkit-desktop-1280x720.png"
+          },
+          {
+            "url": "adengroupcom/cn_media",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-cn_media-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adengroupcom-cn_media-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/adengroupcom-cn_media-webkit-mobile-375x667.png",
+            "diff": null
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.180Z"
+      },
+      "adengroupcom/contact": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "adengroupcom/contact",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-contact-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/chromium/adengroupcom-contact-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/adengroupcom-contact-chromium-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/contact",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-contact-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/chromium/adengroupcom-contact-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/adengroupcom-contact-chromium-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/contact",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-contact-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adengroupcom-contact-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/adengroupcom-contact-firefox-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/contact",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-contact-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adengroupcom-contact-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/adengroupcom-contact-firefox-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/contact",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-contact-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adengroupcom-contact-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/adengroupcom-contact-webkit-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/contact",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-contact-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adengroupcom-contact-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/adengroupcom-contact-webkit-mobile-375x667.png",
+            "diff": null
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.181Z"
+      },
+      "adengroupcom": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "adengroupcom",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-home-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/chromium/adengroupcom-home-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/adengroupcom-home-chromium-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-home-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/chromium/adengroupcom-home-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/adengroupcom-home-chromium-mobile-375x667.png",
+            "diff": "screenshots/ci/chromium/diff-adengroupcom-home-chromium-mobile-375x667.png"
+          },
+          {
+            "url": "adengroupcom",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-home-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/firefox/adengroupcom-home-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/adengroupcom-home-firefox-desktop-1280x720.png",
+            "diff": "screenshots/ci/firefox/diff-adengroupcom-home-firefox-desktop-1280x720.png"
+          },
+          {
+            "url": "adengroupcom",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-home-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.182Z",
+            "baseline": "screenshots/baseline/firefox/adengroupcom-home-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/adengroupcom-home-firefox-mobile-375x667.png",
+            "diff": "screenshots/ci/firefox/diff-adengroupcom-home-firefox-mobile-375x667.png"
+          },
+          {
+            "url": "adengroupcom",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-home-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adengroupcom-home-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/adengroupcom-home-webkit-desktop-1280x720.png",
+            "diff": "screenshots/ci/webkit/diff-adengroupcom-home-webkit-desktop-1280x720.png"
+          },
+          {
+            "url": "adengroupcom",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-home-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adengroupcom-home-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/adengroupcom-home-webkit-mobile-375x667.png",
+            "diff": "screenshots/ci/webkit/diff-adengroupcom-home-webkit-mobile-375x667.png"
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.181Z"
+      },
+      "adengroupcom/media": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "adengroupcom/media",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-media-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/chromium/adengroupcom-media-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/adengroupcom-media-chromium-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/media",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-media-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/chromium/adengroupcom-media-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/adengroupcom-media-chromium-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/media",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-media-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.182Z",
+            "baseline": "screenshots/baseline/firefox/adengroupcom-media-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/adengroupcom-media-firefox-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/media",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-media-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.182Z",
+            "baseline": "screenshots/baseline/firefox/adengroupcom-media-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/adengroupcom-media-firefox-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/media",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "adengroupcom-media-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adengroupcom-media-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/adengroupcom-media-webkit-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "adengroupcom/media",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "adengroupcom-media-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/adengroupcom-media-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/adengroupcom-media-webkit-mobile-375x667.png",
+            "diff": null
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.181Z"
+      },
+      "examplecom": {
+        "browsers": {},
+        "devices": {},
+        "screenshots": [
+          {
+            "url": "examplecom",
+            "browser": "Chrome",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "examplecom-home-chromium-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/chromium/examplecom-home-chromium-desktop-1280x720.png",
+            "current": "screenshots/ci/chromium/examplecom-home-chromium-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "examplecom",
+            "browser": "Chrome",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "examplecom-home-chromium-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.181Z",
+            "baseline": "screenshots/baseline/chromium/examplecom-home-chromium-mobile-375x667.png",
+            "current": "screenshots/ci/chromium/examplecom-home-chromium-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "examplecom",
+            "browser": "Firefox",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "examplecom-home-firefox-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.182Z",
+            "baseline": "screenshots/baseline/firefox/examplecom-home-firefox-desktop-1280x720.png",
+            "current": "screenshots/ci/firefox/examplecom-home-firefox-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "examplecom",
+            "browser": "Firefox",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "examplecom-home-firefox-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.182Z",
+            "baseline": "screenshots/baseline/firefox/examplecom-home-firefox-mobile-375x667.png",
+            "current": "screenshots/ci/firefox/examplecom-home-firefox-mobile-375x667.png",
+            "diff": null
+          },
+          {
+            "url": "examplecom",
+            "browser": "Safari",
+            "device": "desktop",
+            "resolution": "1280x720",
+            "fullName": "examplecom-home-webkit-desktop-1280x720.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/examplecom-home-webkit-desktop-1280x720.png",
+            "current": "screenshots/ci/webkit/examplecom-home-webkit-desktop-1280x720.png",
+            "diff": null
+          },
+          {
+            "url": "examplecom",
+            "browser": "Safari",
+            "device": "mobile",
+            "resolution": "375x667",
+            "fullName": "examplecom-home-webkit-mobile-375x667.png",
+            "timestamp": "2024-11-26T01:29:00.183Z",
+            "baseline": "screenshots/baseline/webkit/examplecom-home-webkit-mobile-375x667.png",
+            "current": "screenshots/ci/webkit/examplecom-home-webkit-mobile-375x667.png",
+            "diff": null
+          }
+        ],
+        "lastUpdated": "2024-11-26T01:29:00.181Z"
+      }
+    },
+    "totalUrls": 21,
+    "totalScreenshots": 126,
+    "browsers": [
+      "Chrome",
+      "Firefox",
+      "Safari"
+    ],
+    "devices": [
+      "desktop",
+      "mobile"
+    ]
+  }
+]
